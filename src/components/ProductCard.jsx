@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../store/cartStore";
 
-// Notes Modal inside same file for simplicity
+// ================= Notes Modal =================
 function NotesModal({ onClose, onAdd }) {
   const [note, setNote] = useState("");
 
@@ -13,7 +13,7 @@ function NotesModal({ onClose, onAdd }) {
         <h2 className="text-xl font-bold mb-2">Add Preparation Notes</h2>
         <p className="text-sm text-gray-600 mb-2">
           Tell us how you want your meat/fish prepared:
-          <br/>• No Liver • Small Cut • Medium Cut • Only Fillet • Include Head etc.
+          <br/>• No Liver • Small Cut • Medium Cut • Remove Head • Fillet etc.
         </p>
 
         <textarea
@@ -24,10 +24,7 @@ function NotesModal({ onClose, onAdd }) {
         />
 
         <div className="flex justify-end gap-3 mt-4">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border rounded"
-          >
+          <button onClick={onClose} className="px-4 py-2 border rounded">
             Cancel
           </button>
 
@@ -38,12 +35,12 @@ function NotesModal({ onClose, onAdd }) {
             Add to Cart
           </button>
         </div>
-
       </div>
     </div>
   );
 }
 
+// ================= Product Card =================
 export default function ProductCard({ item }) {
   const navigate = useNavigate();
   const addToCart = useCart(s => s.addToCart);
@@ -51,13 +48,15 @@ export default function ProductCard({ item }) {
 
   const [openNote, setOpenNote] = useState(false);
 
+  // Backend Live URL fix 🔥
+  const BASE_URL = "https://rms-backend-44od.onrender.com";
+
   const mainImage = item.images?.[0]?.startsWith("http")
     ? item.images[0]
-    : `http://localhost:5000/uploads/${item.images?.[0]}`;
+    : `${BASE_URL}/uploads/${item.images?.[0]}`;
 
-  // final add with note
   const handleAdd = (note) => {
-    addToCart({ ...item, note });   // Save customer note inside cart
+    addToCart({ ...item, note });
     toggleCart();
     setOpenNote(false);
   };
@@ -65,8 +64,8 @@ export default function ProductCard({ item }) {
   return (
     <div className="border p-4 shadow hover:shadow-lg rounded text-center">
 
-      <img 
-        src={mainImage} 
+      <img
+        src={mainImage}
         className="w-full h-48 object-cover rounded cursor-pointer"
         onClick={() => navigate(`/product/${item._id}`)}
       />
@@ -74,7 +73,7 @@ export default function ProductCard({ item }) {
       <h3 className="font-bold text-lg mt-3">{item.name}</h3>
       <p className="text-teal-700 font-semibold">₹{item.price}/{item.unit || "kg"}</p>
 
-      {/* New Behavior => Opens Notes Modal */}
+      {/* Open Notes Popup instead of direct add */}
       <button 
         onClick={() => setOpenNote(true)}
         className="mt-3 w-full bg-orange-500 text-white py-2 rounded">
