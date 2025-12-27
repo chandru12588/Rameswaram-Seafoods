@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosClient";   // <-- using global backend baseURL
 import { Bar, Pie } from "react-chartjs-2";
-import { Link } from "react-router-dom";   // 🔥 Needed for back button
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend } from "chart.js";
+import { Link } from "react-router-dom";
+import { 
+  Chart as ChartJS, CategoryScale, LinearScale, 
+  BarElement, ArcElement, Tooltip, Legend 
+} from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
@@ -10,8 +13,9 @@ export default function Analytics() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/orders")
-      .then(res => setOrders(res.data));
+    api.get("/orders")
+      .then(res => setOrders(res.data))
+      .catch(err => console.log("Analytics Fetch Error:", err));
   }, []);
 
   const totalRevenue = orders.reduce((s, o) => s + o.totalAmount, 0);
@@ -19,25 +23,25 @@ export default function Analytics() {
   const pending = orders.filter(o => o.status === "Pending").length;
   const packed = orders.filter(o => o.status === "Packed").length;
 
-  // Monthly aggregation
+  // Monthly revenue aggregation
   const monthlyData = {};
   orders.forEach(o => {
     const month = new Date(o.createdAt).toLocaleString("en-US", { month: "short" });
     monthlyData[month] = (monthlyData[month] || 0) + o.totalAmount;
   });
 
-  // Product demand count
+  // Best selling product count
   const productCount = {};
   orders.forEach(order => {
     order.items.forEach(i => {
-      productCount[i.name] = (productCount[i.name] || 0) + i.quantity;
+      productCount[i.name] = (productCount[i.name] || 0) + (i.quantity || 1);
     });
   });
 
   return (
     <div className="pt-24 p-6 max-w-7xl mx-auto">
 
-      {/* 🔥 FIXED BACK BUTTON */}
+      {/* Back button */}
       <Link
         to="/admin/dashboard"
         className="bg-black text-white px-4 py-2 rounded inline-block mb-6"
@@ -47,7 +51,7 @@ export default function Analytics() {
 
       <h1 className="text-3xl font-bold mb-6">📊 Analytics Dashboard</h1>
 
-      {/* Summary Cards */}
+      {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-blue-600 text-white p-4 rounded shadow">Total Orders<br/><b>{orders.length}</b></div>
         <div className="bg-green-600 text-white p-4 rounded shadow">Revenue<br/><b>₹{totalRevenue}</b></div>
@@ -55,7 +59,7 @@ export default function Analytics() {
         <div className="bg-purple-600 text-white p-4 rounded shadow">Delivered<br/><b>{delivered}</b></div>
       </div>
 
-      {/* Monthly Revenue Graph */}
+      {/* Monthly revenue graph */}
       <div className="bg-white p-4 rounded shadow mb-6">
         <h2 className="font-bold mb-2">📅 Monthly Sales</h2>
         <Bar
@@ -70,7 +74,7 @@ export default function Analytics() {
         />
       </div>
 
-      {/* Best Selling Pie Chart */}
+      {/* Best selling products */}
       <div className="bg-white p-4 rounded shadow">
         <h2 className="font-bold mb-2">🥇 Best Selling Items</h2>
         <Pie

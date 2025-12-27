@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://rms-backend-44od.onrender.com/api" // <-- correct backend URL
+  baseURL: import.meta.env.VITE_API_URL + "/api"   // Reads URL from .env
 });
 
 export default api;

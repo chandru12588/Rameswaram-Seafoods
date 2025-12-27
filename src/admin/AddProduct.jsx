@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosClient";   // <-- use global axios instance
 import { Link } from "react-router-dom";
 
 export default function AddProduct() {
@@ -9,16 +9,18 @@ export default function AddProduct() {
   const [price, setPrice] = useState("");
   const [unit, setUnit] = useState("kg");
   const [categoryId, setCategoryId] = useState("");
-  const [images, setImages] = useState([]); // ⭐ Multi images support
+  const [images, setImages] = useState([]);
   const [description, setDescription] = useState("");
 
+  // 🔥 Load categories from deployed backend
   useEffect(() => {
-    axios.get("http://localhost:5000/api/categories")
-      .then(res => setCategories(res.data));
+    api.get("/categories")
+      .then(res => setCategories(res.data))
+      .catch(err => console.log("Category Fetch Failed", err));
   }, []);
 
   const handleImageUpload = (e) => {
-    setImages([...e.target.files]); // Store multiple files
+    setImages([...e.target.files]);
   };
 
   const addProduct = async () => {
@@ -34,28 +36,31 @@ export default function AddProduct() {
       form.append("categoryId", categoryId);
       form.append("description", description);
 
-      // ⭐ Submit multiple images
       images.forEach(img => form.append("images", img));
 
-      await axios.post("http://localhost:5000/api/products/add", form, {
+      await api.post("/products/add", form, { 
         headers: { "Content-Type": "multipart/form-data" }
       });
 
       alert("✔ Product Added Successfully");
 
-      setName(""); setPrice(""); setUnit("kg");
-      setCategoryId(""); setImages([]); setDescription("");
+      setName(""); 
+      setPrice(""); 
+      setUnit("kg");
+      setCategoryId("");
+      setImages([]);
+      setDescription("");
 
     } catch (err) {
       console.log(err);
-      alert("❌ Failed to add Product. Check backend.");
+      alert("❌ Failed to add Product. Check server.");
     }
   };
 
   return (
     <div className="pt-24 p-6 max-w-md mx-auto">
 
-      {/* 🔥 Updated route to fix 404 */}
+      {/* Back to dashboard */}
       <Link to="/admin/dashboard" className="bg-black text-white px-4 py-2 rounded inline-block mb-4">
         ⬅ Back to Dashboard
       </Link>
@@ -64,15 +69,11 @@ export default function AddProduct() {
 
       <div className="space-y-3">
 
-        <input type="text" placeholder="Product Name"
-          className="border p-2 w-full" value={name}
-          onChange={(e)=>setName(e.target.value)}
-        />
+        <input type="text" placeholder="Product Name" className="border p-2 w-full"
+          value={name} onChange={(e)=>setName(e.target.value)} />
 
-        <input type="number" placeholder="Price"
-          className="border p-2 w-full" value={price}
-          onChange={(e)=>setPrice(e.target.value)}
-        />
+        <input type="number" placeholder="Price" className="border p-2 w-full"
+          value={price} onChange={(e)=>setPrice(e.target.value)} />
 
         <select className="border p-2 w-full" value={unit} onChange={(e)=>setUnit(e.target.value)}>
           <option value="kg">kg</option>
@@ -85,20 +86,17 @@ export default function AddProduct() {
           {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
         </select>
 
-        <textarea placeholder="Description (optional)"
-          className="border p-2 w-full h-24"
-          value={description} onChange={(e)=>setDescription(e.target.value)}
-        ></textarea>
+        <textarea placeholder="Description (optional)" className="border p-2 w-full h-24"
+          value={description} onChange={(e)=>setDescription(e.target.value)} />
 
-        {/* Multi Image Upload */}
-        <input type="file" accept="image/*" multiple className="border p-2 w-full" onChange={handleImageUpload}/>
+        {/* Multiple Image Upload */}
+        <input type="file" accept="image/*" multiple className="border p-2 w-full"
+          onChange={handleImageUpload} />
 
         {images.length > 0 && (
           <div className="grid grid-cols-3 gap-2 mt-2">
             {images.map((img, i) => (
-              <img key={i} src={URL.createObjectURL(img)}
-                className="h-24 w-full object-cover rounded border"
-              />
+              <img key={i} src={URL.createObjectURL(img)} className="h-24 w-full object-cover rounded border" />
             ))}
           </div>
         )}

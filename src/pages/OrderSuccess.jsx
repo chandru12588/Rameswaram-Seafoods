@@ -6,7 +6,9 @@ export default function OrderSuccess(){
   const { state } = useLocation();
   const [order, setOrder] = useState(state || null);
 
-  // Load from localStorage if page refreshed
+  const backend = "https://rms-backend-44od.onrender.com"; // 🔥 Production base URL
+
+  // Load order if page refreshed
   useEffect(() => {
     if (!order) {
       const saved = JSON.parse(localStorage.getItem("latestOrder"));
@@ -14,38 +16,37 @@ export default function OrderSuccess(){
     }
   }, []);
 
-  // AUTO WhatsApp message when order is available
+  // Auto WhatsApp message when order is available
   useEffect(() => {
     if(order) sendWhatsApp();
   }, [order]);
 
   const downloadInvoice = () => {
-    window.open(`http://localhost:5000/api/orders/invoice/download/${id}`,"_blank");
+    window.open(`${backend}/api/orders/invoice/download/${id}`, "_blank");
   };
 
-  // 🔥 FIXED WhatsApp Message
   const sendWhatsApp = () => {
     const data = order || JSON.parse(localStorage.getItem("latestOrder"));
     if (!data) return;
 
-    const owner = "919655244550"; 
+    const owner = "919655244550"; // WhatsApp Number without + symbol
 
-    const msg = `📦 *New Order Received*
+    const msg = `📦 *New Order Received!*
+─────────────────────
+🧾 *Order ID:* ${id}
 
-🧾 Order ID: ${id}
-
-👤 *${data.name}*
+👤 ${data.name}
 📞 ${data.phone}
 📍 ${data.address}
 
-🍤 *Items:* 
-${data.items.map(i =>
-  `• ${i.name} × ${i.quantity}${i.unit ? ` (${i.unit})` : ""} - ₹${i.price * i.quantity}`
+🍤 *Items Ordered:*  
+${data.items.map(i => 
+`• ${i.name} × ${i.quantity}${i.unit ? ` ${i.unit}` : ""} - ₹${i.price * i.quantity}`
 ).join("\n")}
 
-💰 *Total: ₹${data.total}*
+💰 *Total Amount:* ₹${data.total}
 📝 Note: ${data.note || "No special request"}
-
+─────────────────────
 🙏 Thanks for ordering!
 `;
 

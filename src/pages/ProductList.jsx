@@ -10,15 +10,21 @@ export default function ProductList() {
   }, []);
 
   const loadProducts = async () => {
-    const { data } = await api.get("/products");
-    setProducts(data);
+    try {
+      const { data } = await api.get("/products");
+      setProducts(data);
+    } catch (err) {
+      console.log("Product Fetch Error:", err);
+    }
   };
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
-    await api.delete(`/products/${id}`);
+    await api.delete(`/products/delete/${id}`);   // 🔥 updated correct route
     loadProducts();
   };
+
+  const backend = "https://rms-backend-44od.onrender.com"; // 🔥 for production images
 
   return (
     <div className="pt-28 max-w-6xl mx-auto px-6">
@@ -39,8 +45,12 @@ export default function ProductList() {
         <tbody>
           {products.map(p => (
             <tr key={p._id} className="text-center">
+
               <td className="border p-2">
-                <img src={`http://localhost:5000/uploads/${p.images?.[0]}`} className="h-14 mx-auto"/>
+                <img
+                  src={`${backend}/uploads/${p.images?.[0]}`}
+                  className="h-14 w-14 object-cover rounded mx-auto"
+                />
               </td>
 
               <td className="border p-2">{p.name}</td>
@@ -49,7 +59,7 @@ export default function ProductList() {
 
               <td className="border p-2 flex gap-2 justify-center">
                 <Link
-                  to={`/edit-product/${p._id}`}
+                  to={`/admin/edit-product/${p._id}`}   // 🔥 fixed correct route format
                   className="bg-blue-600 text-white px-3 py-1 rounded"
                 >
                   Edit
@@ -62,6 +72,7 @@ export default function ProductList() {
                   Delete
                 </button>
               </td>
+
             </tr>
           ))}
         </tbody>

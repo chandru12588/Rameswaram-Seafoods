@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosClient";   // <--- using backend baseURL
 import { Link } from "react-router-dom";
 
 export default function Shop() {
@@ -16,11 +16,11 @@ export default function Shop() {
   const [paymentMode, setPaymentMode] = useState("COD");
 
 
-  // ================= Fetch Products =================
+  // ================= Fetch Products (Live URL) =================
   useEffect(() => {
-    axios.get("http://localhost:5000/api/products").then((res) => {
-      setProducts(res.data.filter(p => p.available));
-    });
+    api.get("/products")
+       .then((res) => setProducts(res.data.filter(p => p.available)))
+       .catch(err => console.log("Fetch Product Error:", err));
   }, []);
 
 
@@ -28,8 +28,8 @@ export default function Shop() {
   const addToCart = (item) => {
     const exists = cart.find(c => c._id === item._id);
     exists
-      ? setCart(cart.map(c => c._id === item._id ? { ...c, qty: c.qty + 1 } : c))
-      : setCart([...cart, { ...item, qty: 1 }]);
+      ? setCart(cart.map(c => c._id === item._id ? { ...c, qty:c.qty+1 } : c))
+      : setCart([...cart, { ...item, qty:1 }]);
   };
 
 
@@ -41,7 +41,7 @@ export default function Shop() {
   };
 
 
-  // =============== Place Order ===============
+  // =============== Place Order (LIVE BACKEND) ===============
   const placeOrder = async () => {
     if (!customer.name || !customer.mobile || !customer.address)
       return alert("Please fill customer details");
@@ -52,23 +52,27 @@ export default function Shop() {
       customerAddress: customer.address,
       paymentMode,
       items: cart.map(c => ({
-        productId: c._id,
-        name: c.name,
-        price: c.price,
-        quantity: c.qty,
-        total: c.qty * c.price
+        productId:c._id,
+        name:c.name,
+        price:c.price,
+        quantity:c.qty,
+        total:c.qty*c.price
       })),
-      totalAmount: cart.reduce((t, i) => t + i.qty * i.price, 0),
+      totalAmount: cart.reduce((t,i)=>t+i.qty*i.price,0),
     };
 
-    await axios.post("http://localhost:5000/api/orders/create", orderData);
+    await api.post("/orders/create", orderData);
 
-    if (paymentMode === "UPI") payWithUPI(orderData.totalAmount);
+    if (paymentMode==="UPI") 
+      payWithUPI(orderData.totalAmount);
 
-    alert("Order placed successfully!");
+    alert("🎉 Order placed successfully!");
     setCart([]);
     setShowForm(false);
   };
+
+
+  const backend = "https://rms-backend-44od.onrender.com";   // <--- for images
 
 
   return (
@@ -85,7 +89,6 @@ export default function Shop() {
       {/* ================= SEARCH + FILTER ================= */}
       <div className="flex flex-wrap gap-3 mb-6 items-center max-w-5xl">
 
-        {/* Search Bar */}
         <input
           placeholder="Search fish/meat..."
           value={search}
@@ -93,7 +96,6 @@ export default function Shop() {
           className="border p-3 rounded flex-1 min-w-[260px]"
         />
 
-        {/* Category Filter */}
         <select
           value={categoryFilter}
           onChange={(e)=>setCategoryFilter(e.target.value)}
@@ -105,13 +107,10 @@ export default function Shop() {
           ))}
         </select>
 
-        {/* Clear Filter */}
         <button
           onClick={()=>{ setSearch(""); setCategoryFilter("All"); }}
           className="px-4 bg-gray-300 rounded h-[48px]"
-        >
-          Clear
-        </button>
+        >Clear</button>
 
       </div>
 
@@ -121,41 +120,39 @@ export default function Shop() {
 
         {products
           .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
-          .filter(p => categoryFilter === "All" || p.categoryId?.name === categoryFilter)
+          .filter(p => categoryFilter==="All" || p.categoryId?.name===categoryFilter)
           .map(p => (
             <div key={p._id} className="border p-3 shadow rounded text-center hover:shadow-xl">
 
               <img
-                src={`http://localhost:5000/uploads/${p.images?.[0] || p.image}`}
+                src={`${backend}/uploads/${p.images?.[0] || p.image}`}
                 className="w-full h-56 object-cover rounded mb-3"
               />
 
               <h2 className="font-bold text-lg">{p.name}</h2>
               <p className="text-green-700 font-semibold">₹{p.price}/{p.unit}</p>
 
-              <button onClick={()=>addToCart(p)} className="bg-orange-500 text-white w-full py-2 mt-2 rounded">
+              <button onClick={()=>addToCart(p)}
+                className="bg-orange-500 text-white w-full py-2 mt-2 rounded">
                 Add to Cart
               </button>
 
-              <button
-                onClick={()=>setSelectedProduct(p)}
-                className="text-blue-700 underline text-sm mt-1"
-              >
+              <button onClick={()=>setSelectedProduct(p)}
+                className="text-blue-700 underline text-sm mt-1">
                 View Details
               </button>
             </div>
-          ))}
+        ))}
 
       </div>
 
 
-      {/* ============ CART CHECKOUT STICKY BOTTOM ============ */}
-      {!showForm && cart.length > 0 && (
+      {/* CART FOOTER */}
+      {!showForm && cart.length>0 && (
         <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-xl">
           <button
             onClick={()=>setShowForm(true)}
-            className="bg-teal-600 text-white w-full py-3 rounded text-lg font-semibold"
-          >
+            className="bg-teal-600 text-white w-full py-3 rounded text-lg font-semibold">
             Proceed to Checkout
           </button>
         </div>
@@ -170,25 +167,14 @@ export default function Shop() {
 
           <input className="border p-2 w-full mb-2" placeholder="Name"
             onChange={e=>setCustomer({...customer,name:e.target.value})}/>
-
           <input className="border p-2 w-full mb-2" placeholder="Mobile"
             onChange={e=>setCustomer({...customer,mobile:e.target.value})}/>
-
           <textarea className="border p-2 w-full mb-2" placeholder="Address"
             onChange={e=>setCustomer({...customer,address:e.target.value})}/>
 
-
-          {/* PAYMENT */}
           <p className="font-semibold mb-2">Select Payment Method:</p>
-
-          <label className="block">
-            <input type="radio" name="pay" checked={paymentMode==="COD"}
-              onChange={()=>setPaymentMode("COD")}/> Cash On Delivery
-          </label>
-
-          <label className="block mt-1">
-            <input type="radio" name="pay" onChange={()=>setPaymentMode("UPI")}/> Online UPI (GPay/PhonePe)
-          </label>
+          <label><input type="radio" checked={paymentMode==="COD"} onChange={()=>setPaymentMode("COD")}/> COD</label><br/>
+          <label className="mt-1 block"><input type="radio" name="pay" onChange={()=>setPaymentMode("UPI")}/> Online UPI</label>
 
           {paymentMode==="UPI" && (
             <button className="bg-purple-600 text-white w-full py-2 rounded mt-3"
