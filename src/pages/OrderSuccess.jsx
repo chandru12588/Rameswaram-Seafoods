@@ -16,16 +16,20 @@ export default function OrderSuccess() {
   }, [order]);
 
   useEffect(() => {
-    if (order?.paymentMode === "Online-UPI" || order?.paymentMode === "UPI") {
-      sendWhatsApp();
+    if (order) {
+      const key = `owner_notified_${id}`;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        sendWhatsApp(true);
+      }
     }
-  }, [order]);
+  }, [order, id]);
 
   const downloadInvoice = () => {
     window.open(`${backend}/api/orders/invoice/download/${id}`, "_blank");
   };
 
-  const sendWhatsApp = () => {
+  const sendWhatsApp = (autoRoute = false) => {
     const data = order || JSON.parse(localStorage.getItem("latestOrder"));
     if (!data) return;
 
@@ -50,7 +54,12 @@ export default function OrderSuccess() {
       )
       .join("\n\n")}\n\nPayment Mode: ${paymentMode}\nPayment Status: ${paymentStatus}\nSubtotal: Rs ${subtotal}\nCut and Cleaning Charge: Rs ${cleaningCharge}\nDelivery Charge: Rs ${deliveryCharge}\nTotal Amount: Rs ${data.total}\n------------------------------\nPlease confirm this order.`;
 
-    window.open(`https://wa.me/${owner}?text=${encodeURIComponent(msg)}`, "_blank");
+    const whatsappUrl = `https://wa.me/${owner}?text=${encodeURIComponent(msg)}`;
+    if (autoRoute) {
+      window.location.href = whatsappUrl;
+      return;
+    }
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
@@ -66,7 +75,7 @@ export default function OrderSuccess() {
       </button>
 
       <button
-        onClick={sendWhatsApp}
+        onClick={() => sendWhatsApp(false)}
         className="mt-3 bg-green-600 text-white px-6 py-2 rounded block mx-auto"
       >
         Send WhatsApp Confirmation
