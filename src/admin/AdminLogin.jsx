@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
+import Loader from "../components/Loader";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -118,9 +119,9 @@ export default function AdminLogin() {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="bg-black text-white py-3 w-full rounded disabled:opacity-60"
+          className="bg-black text-white py-3 w-full rounded disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {loading ? "Please wait..." : mode === "login" ? "Login as Admin" : "Reset Password"}
+          {loading ? <Loader label="Please wait..." compact inverse /> : mode === "login" ? "Login as Admin" : "Reset Password"}
         </button>
       </div>
     </div>

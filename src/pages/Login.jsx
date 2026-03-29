@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
+import Loader from "../components/Loader";
 
 export default function Login() {
   const ADMIN_EMAILS = ["admin@rms.com", "owner@rms.com"];
@@ -195,10 +196,10 @@ export default function Login() {
         <button
           onClick={submit}
           disabled={loading}
-          className="bg-teal-700 text-white py-3 w-full rounded hover:bg-teal-800 disabled:opacity-60"
+          className="bg-teal-700 text-white py-3 w-full rounded hover:bg-teal-800 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading
-            ? "Please wait..."
+            ? <Loader label="Please wait..." compact inverse />
             : mode === "signup"
               ? "Create Account"
               : mode === "reset"

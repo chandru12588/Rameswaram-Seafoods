@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/axiosClient";
+import Loader from "../components/Loader";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -22,7 +23,7 @@ export default function AdminUsers() {
       <h1 className="text-2xl md:text-3xl font-bold mb-5">Registered Users</h1>
 
       {loading ? (
-        <p>Loading users...</p>
+        <Loader label="Loading users..." />
       ) : (
         <div className="overflow-x-auto bg-white shadow rounded">
           <table className="w-full text-sm">
@@ -52,4 +53,3 @@ export default function AdminUsers() {
     </div>
   );
 }
-

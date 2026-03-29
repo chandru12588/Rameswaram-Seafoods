@@ -7,6 +7,7 @@ export default function AdminAccount() {
   const { user } = useAuth();
   const [form, setForm] = useState({ currentPassword: "", newPassword: "" });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const changePassword = async () => {
     try {
@@ -33,19 +34,27 @@ export default function AdminAccount() {
 
         <h2 className="font-semibold mb-2">Change Password</h2>
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Current Password"
           className="border p-3 w-full rounded mb-3"
           value={form.currentPassword}
           onChange={(e) => setForm((s) => ({ ...s, currentPassword: e.target.value }))}
         />
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="New Password"
-          className="border p-3 w-full rounded mb-4"
+          className="border p-3 w-full rounded mb-3"
           value={form.newPassword}
           onChange={(e) => setForm((s) => ({ ...s, newPassword: e.target.value }))}
         />
+        <label className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={(e) => setShowPassword(e.target.checked)}
+          />
+          Show password
+        </label>
         <button
           onClick={changePassword}
           disabled={loading}
@@ -57,4 +66,3 @@ export default function AdminAccount() {
     </div>
   );
 }
-

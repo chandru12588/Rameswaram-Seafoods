@@ -23,7 +23,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full shadow bg-white z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center p-3 md:p-4">
+      <div className="w-full flex justify-between items-center px-3 py-3 md:px-6 md:py-4">
         <div className="flex gap-2 md:gap-3 items-center cursor-pointer" onClick={() => navigate("/")}>
           <img src="/logo.png" className="h-12 md:h-16" alt="Logo" />
           <span className="hidden md:block text-2xl font-bold text-teal-700">Rameswaram Seafoods</span>
