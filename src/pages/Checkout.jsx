@@ -56,6 +56,8 @@ export default function Checkout() {
         subtotal,
         cleaningCharge,
         total,
+        paymentMode,
+        paymentStatus: paymentMode === "Online-UPI" ? "Paid" : "Pending",
       };
 
       localStorage.setItem("latestOrder", JSON.stringify(finalOrder));

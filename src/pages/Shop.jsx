@@ -46,6 +46,23 @@ export default function Shop() {
     window.location.href = url;
   };
 
+  const sendOwnerWhatsApp = (orderId, payload, total) => {
+    const owner = "919655244550";
+    const message = `New Order Received
+------------------------------
+Order ID: ${orderId}
+Customer: ${payload.customerName}
+Mobile: ${payload.customerMobile}
+Address: ${payload.customerAddress}
+Payment Mode: Online Payment (UPI)
+Payment Status: Paid
+Total Amount: Rs ${total}
+------------------------------
+Please confirm this order.`;
+
+    window.open(`https://wa.me/${owner}?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
 
   // =============== Place Order (LIVE BACKEND) ===============
   const placeOrder = async () => {
@@ -75,10 +92,15 @@ export default function Shop() {
       })),
     };
 
-    await api.post("/orders/create", orderData);
+    const { data } = await api.post("/orders/create", orderData);
+    const orderId = data?.orderId;
 
-    if (paymentMode==="UPI") 
+    if (paymentMode==="UPI") {
+      if (orderId) {
+        sendOwnerWhatsApp(orderId, orderData, total);
+      }
       payWithUPI(total);
+    }
 
     alert("🎉 Order placed successfully!");
     setCart([]);
