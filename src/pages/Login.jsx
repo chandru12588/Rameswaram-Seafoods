@@ -4,11 +4,13 @@ import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
+  const ADMIN_EMAIL = "admin@rms.com";
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const [mode, setMode] = useState("login");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -41,7 +43,7 @@ export default function Login() {
       const email = normalizeEmail(form.email);
 
       if (mode === "signup") {
-        if (email === "admin@rms.com") {
+        if (email === ADMIN_EMAIL) {
           alert("admin@rms.com is for admin login only. Please use another email for user account.");
           return;
         }
@@ -58,6 +60,16 @@ export default function Login() {
       }
 
       if (mode === "login") {
+        if (email === ADMIN_EMAIL) {
+          const { data } = await api.post("/admin/login", {
+            email,
+            password: form.password,
+          });
+          login({ token: data.token, user: data.admin, role: "admin" });
+          navigate("/admin/dashboard");
+          return;
+        }
+
         const { data } = await postWithFallback(["/users/login", "/users/signin"], {
           email,
           password: form.password,
@@ -153,7 +165,7 @@ export default function Login() {
               onChange={(e) => onChange("mobile", e.target.value)}
             />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="New Password"
               className="border p-3 w-full rounded mb-4"
               value={form.newPassword}
@@ -162,13 +174,22 @@ export default function Login() {
           </>
         ) : (
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             className="border p-3 w-full rounded mb-4"
             value={form.password}
             onChange={(e) => onChange("password", e.target.value)}
           />
         )}
+
+        <label className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={(e) => setShowPassword(e.target.checked)}
+          />
+          Show password
+        </label>
 
         <button
           onClick={submit}

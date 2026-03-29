@@ -8,6 +8,7 @@ export default function AdminLogin() {
   const { login, isAdmin } = useAuth();
   const [mode, setMode] = useState("login");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -80,7 +81,7 @@ export default function AdminLogin() {
 
         {mode === "login" ? (
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             className="border p-3 w-full rounded mb-4"
             value={form.password}
@@ -96,7 +97,7 @@ export default function AdminLogin() {
               onChange={(e) => onChange("mobile", e.target.value)}
             />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="New Password"
               className="border p-3 w-full rounded mb-4"
               value={form.newPassword}
@@ -104,6 +105,15 @@ export default function AdminLogin() {
             />
           </>
         )}
+
+        <label className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={(e) => setShowPassword(e.target.checked)}
+          />
+          Show password
+        </label>
 
         <button
           onClick={handleSubmit}
