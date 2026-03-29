@@ -37,12 +37,6 @@ function AdminRoute({ children }) {
   return children;
 }
 
-function UserRoute({ children }) {
-  const { isUser } = useAuth();
-  if (!isUser) return <Navigate to="/login" replace />;
-  return children;
-}
-
 export default function App() {
   return (
     <Router>
@@ -56,14 +50,7 @@ export default function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route
-            path="/checkout"
-            element={
-              <UserRoute>
-                <Checkout />
-              </UserRoute>
-            }
-          />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success/:id" element={<OrderSuccess />} />
           <Route path="/shop" element={<Shop />} />
 

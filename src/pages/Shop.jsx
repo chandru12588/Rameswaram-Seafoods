@@ -14,7 +14,7 @@ export default function Shop() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
 
-  const [customer, setCustomer] = useState({ name: "", mobile: "", address: "" });
+  const [customer, setCustomer] = useState({ name: "", mobile: "", email: "", address: "" });
   const [paymentMode, setPaymentMode] = useState("COD");
 
 
@@ -45,15 +45,13 @@ export default function Shop() {
 
   // =============== Place Order (LIVE BACKEND) ===============
   const placeOrder = async () => {
-    if (!user?.email) return alert("Please login with email before checkout.");
-
     if (!customer.name || !customer.mobile || !customer.address)
       return alert("Please fill customer details");
 
     const orderData = {
       customerName: customer.name,
       customerMobile: customer.mobile,
-      customerEmail: user.email,
+      customerEmail: customer.email || user?.email || "",
       customerAddress: customer.address,
       paymentMode,
       items: cart.map(c => ({
@@ -173,6 +171,8 @@ export default function Shop() {
             onChange={e=>setCustomer({...customer,name:e.target.value})}/>
           <input className="border p-2 w-full mb-2" placeholder="Mobile"
             onChange={e=>setCustomer({...customer,mobile:e.target.value})}/>
+          <input className="border p-2 w-full mb-2" placeholder="Email (optional)"
+            onChange={e=>setCustomer({...customer,email:e.target.value})}/>
           <textarea className="border p-2 w-full mb-2" placeholder="Address"
             onChange={e=>setCustomer({...customer,address:e.target.value})}/>
 

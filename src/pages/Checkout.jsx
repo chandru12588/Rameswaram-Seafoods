@@ -8,9 +8,14 @@ export default function Checkout() {
   const cart = useCart((s) => s.cart);
   const clearCart = useCart((s) => s.clearCart);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
 
-  const [form, setForm] = useState({ name: user?.name || "", phone: user?.mobile || "", address: "" });
+  const [form, setForm] = useState({
+    name: user?.name || "",
+    phone: user?.mobile || "",
+    email: user?.email || "",
+    address: "",
+  });
   const [paymentMode, setPaymentMode] = useState("COD");
 
   const subtotal = cart.reduce((sum, i) => sum + i.price * (i.quantity || 1), 0);
@@ -26,7 +31,7 @@ export default function Checkout() {
       items: cart,
       customerName: form.name,
       customerMobile: form.phone,
-      customerEmail: user?.email,
+      customerEmail: form.email,
       customerAddress: form.address,
       paymentMode,
     };
@@ -38,7 +43,7 @@ export default function Checkout() {
       const finalOrder = {
         name: form.name,
         phone: form.phone,
-        email: user?.email,
+        email: form.email,
         address: form.address,
         items: cart,
         subtotal,
@@ -132,10 +137,13 @@ export default function Checkout() {
 
         <input
           placeholder="Email ID"
-          className="border p-3 rounded w-full mt-4 bg-gray-50"
-          value={user?.email || ""}
-          readOnly
+          className="border p-3 rounded w-full mt-4"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
+        {!isLoggedIn && (
+          <p className="text-xs text-gray-500 mt-1">Email is optional. You can order without email.</p>
+        )}
 
         <textarea
           placeholder="Full Delivery Address"
