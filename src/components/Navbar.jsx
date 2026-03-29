@@ -35,7 +35,6 @@ export default function Navbar() {
             <Link to="/products">Shop</Link>
 
             {!isLoggedIn && <Link to="/login">User Login</Link>}
-            {!isAdmin && <Link to="/admin/login">Admin Login</Link>}
 
             {isAdmin && <Link to="/admin/dashboard">Dashboard</Link>}
 
@@ -77,12 +76,6 @@ export default function Navbar() {
           {!isLoggedIn && (
             <Link onClick={() => setOpen(false)} to="/login" className="block p-3">
               User Login / Sign Up
-            </Link>
-          )}
-
-          {!isAdmin && (
-            <Link onClick={() => setOpen(false)} to="/admin/login" className="block p-3">
-              Admin Login
             </Link>
           )}
 

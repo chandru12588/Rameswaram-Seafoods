@@ -8,7 +8,6 @@ export default function AdminLogin() {
   const { login, isAdmin } = useAuth();
   const [mode, setMode] = useState("login");
   const [loading, setLoading] = useState(false);
-  const [defaultCreds, setDefaultCreds] = useState({ username: "", password: "" });
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -19,13 +18,6 @@ export default function AdminLogin() {
   useEffect(() => {
     if (isAdmin) navigate("/admin/dashboard");
   }, [isAdmin, navigate]);
-
-  useEffect(() => {
-    api
-      .get("/admin/default-credentials")
-      .then((res) => setDefaultCreds(res.data))
-      .catch(() => {});
-  }, []);
 
   const onChange = (key, value) => setForm((s) => ({ ...s, [key]: value }));
 
@@ -57,28 +49,11 @@ export default function AdminLogin() {
     }
   };
 
-  const useDefaults = () => {
-    setForm((s) => ({
-      ...s,
-      email: defaultCreds.username || "owner@rms.com",
-      password: defaultCreds.password || "rms@123",
-    }));
-  };
-
   return (
     <div className="pt-28 px-4 pb-10">
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow border">
         <h2 className="text-2xl font-bold text-center mb-2">Admin Login</h2>
-        <p className="text-xs text-gray-600 text-center mb-4">
-          Default username: <b>{defaultCreds.username || "owner@rms.com"}</b> | password:{" "}
-          <b>{defaultCreds.password || "rms@123"}</b>
-        </p>
-        <button
-          onClick={useDefaults}
-          className="w-full border border-teal-700 text-teal-700 py-2 rounded mb-5"
-        >
-          Fill Default Credentials
-        </button>
+        <p className="text-xs text-gray-600 text-center mb-4">Only authorized admin account can login.</p>
 
         <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
           <button
@@ -141,4 +116,3 @@ export default function AdminLogin() {
     </div>
   );
 }
-
