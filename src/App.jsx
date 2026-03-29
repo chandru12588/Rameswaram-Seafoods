@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,11 +5,6 @@ import {
   Navigate,
 } from "react-router-dom";
 
-/* ---------------- Firebase ---------------- */
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
-
-/* ---------------- Admin Pages ---------------- */
 import Dashboard from "./admin/Dashboard";
 import AddCategory from "./admin/AddCategory";
 import AddProduct from "./admin/AddProduct";
@@ -19,8 +13,10 @@ import EditProduct from "./admin/EditProduct";
 import Orders from "./admin/Orders";
 import Analytics from "./admin/Analytics";
 import AdminOrderView from "./admin/AdminOrderView";
+import AdminLogin from "./admin/AdminLogin";
+import AdminUsers from "./admin/AdminUsers";
+import AdminAccount from "./admin/AdminAccount";
 
-/* ---------------- Customer Pages ---------------- */
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
@@ -30,37 +26,24 @@ import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 
-/* ---------------- Components ---------------- */
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CartDrawer from "./components/CartDrawer";
+import { useAuth } from "./context/AuthContext";
 
-const ADMIN_EMAIL = "owner@rms.com"; // ✅ admin email
+function AdminRoute({ children }) {
+  const { isAdmin } = useAuth();
+  if (!isAdmin) return <Navigate to="/admin/login" replace />;
+  return children;
+}
+
+function UserRoute({ children }) {
+  const { isUser } = useAuth();
+  if (!isUser) return <Navigate to="/login" replace />;
+  return children;
+}
 
 export default function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // 🔐 Listen to Firebase auth state
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const isAdmin = user?.email === ADMIN_EMAIL;
-
-  // Prevent flicker before auth loads
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
-
   return (
     <Router>
       <Navbar />
@@ -68,50 +51,103 @@ export default function App() {
 
       <div className="pt-24 min-h-screen bg-gray-50">
         <Routes>
-          {/* ---------------- Customer Routes ---------------- */}
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route
+            path="/checkout"
+            element={
+              <UserRoute>
+                <Checkout />
+              </UserRoute>
+            }
+          />
           <Route path="/order-success/:id" element={<OrderSuccess />} />
           <Route path="/shop" element={<Shop />} />
 
-          {/* ---------------- Admin Routes (PROTECTED) ---------------- */}
           <Route
             path="/admin/dashboard"
-            element={isAdmin ? <Dashboard /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <Dashboard />
+              </AdminRoute>
+            }
           />
           <Route
             path="/admin/add-category"
-            element={isAdmin ? <AddCategory /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <AddCategory />
+              </AdminRoute>
+            }
           />
           <Route
             path="/admin/add-product"
-            element={isAdmin ? <AddProduct /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <AddProduct />
+              </AdminRoute>
+            }
           />
           <Route
             path="/admin/products"
-            element={isAdmin ? <AdminProductList /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <AdminProductList />
+              </AdminRoute>
+            }
           />
           <Route
             path="/admin/edit-product/:id"
-            element={isAdmin ? <EditProduct /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <EditProduct />
+              </AdminRoute>
+            }
           />
           <Route
             path="/admin/orders"
-            element={isAdmin ? <Orders /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <Orders />
+              </AdminRoute>
+            }
           />
           <Route
             path="/admin/order/:id"
-            element={isAdmin ? <AdminOrderView /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <AdminOrderView />
+              </AdminRoute>
+            }
           />
           <Route
             path="/admin/analytics"
-            element={isAdmin ? <Analytics /> : <Navigate to="/" />}
+            element={
+              <AdminRoute>
+                <Analytics />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <AdminUsers />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/account"
+            element={
+              <AdminRoute>
+                <AdminAccount />
+              </AdminRoute>
+            }
           />
 
-          {/* ---------------- 404 ---------------- */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

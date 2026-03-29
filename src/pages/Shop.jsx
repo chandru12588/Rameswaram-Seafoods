@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import api from "../utils/axiosClient";   // <--- using backend baseURL
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Shop() {
+  const { user } = useAuth();
 
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -43,12 +45,15 @@ export default function Shop() {
 
   // =============== Place Order (LIVE BACKEND) ===============
   const placeOrder = async () => {
+    if (!user?.email) return alert("Please login with email before checkout.");
+
     if (!customer.name || !customer.mobile || !customer.address)
       return alert("Please fill customer details");
 
     const orderData = {
       customerName: customer.name,
       customerMobile: customer.mobile,
+      customerEmail: user.email,
       customerAddress: customer.address,
       paymentMode,
       items: cart.map(c => ({
@@ -58,7 +63,6 @@ export default function Shop() {
         quantity:c.qty,
         total:c.qty*c.price
       })),
-      totalAmount: cart.reduce((t,i)=>t+i.qty*i.price,0),
     };
 
     await api.post("/orders/create", orderData);

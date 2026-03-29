@@ -49,7 +49,7 @@ export default function ProductCard({ item }) {
   const [openNote, setOpenNote] = useState(false);
 
   // Backend Live URL fix 🔥
-  const BASE_URL = "https://rms-backend-44od.onrender.com";
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   const mainImage = item.images?.[0]?.startsWith("http")
     ? item.images[0]

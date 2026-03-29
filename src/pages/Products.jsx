@@ -13,7 +13,7 @@ export default function Products() {
   }, []);
 
   const loadProducts = async () => {
-    const { data } = await api.get("/products");
+    const { data } = await api.get("/products?available=true");
     setProducts(data);
   };
 
