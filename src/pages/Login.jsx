@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
 
@@ -20,15 +20,36 @@ export default function Login() {
 
   const onChange = (key, value) => setForm((s) => ({ ...s, [key]: value }));
 
+  const normalizeEmail = (email) => (email || "").toLowerCase().trim();
+
+  const postWithFallback = async (paths, payload) => {
+    let lastError = null;
+    for (const path of paths) {
+      try {
+        return await api.post(path, payload);
+      } catch (error) {
+        lastError = error;
+        if (error?.response?.status !== 404) throw error;
+      }
+    }
+    throw lastError;
+  };
+
   const submit = async () => {
     try {
       setLoading(true);
+      const email = normalizeEmail(form.email);
 
       if (mode === "signup") {
-        const { data } = await api.post("/users/signup", {
+        if (email === "admin@rms.com") {
+          alert("admin@rms.com is for admin login only. Please use another email for user account.");
+          return;
+        }
+
+        const { data } = await postWithFallback(["/users/signup", "/users/register"], {
           name: form.name,
           mobile: form.mobile,
-          email: form.email,
+          email,
           password: form.password,
         });
         login({ token: data.token, user: data.user, role: "user" });
@@ -37,8 +58,8 @@ export default function Login() {
       }
 
       if (mode === "login") {
-        const { data } = await api.post("/users/login", {
-          email: form.email,
+        const { data } = await postWithFallback(["/users/login", "/users/signin"], {
+          email,
           password: form.password,
         });
         login({ token: data.token, user: data.user, role: "user" });
@@ -46,15 +67,23 @@ export default function Login() {
         return;
       }
 
-      await api.post("/users/reset-password", {
-        email: form.email,
+      await postWithFallback(["/users/reset-password", "/users/forgot-password"], {
+        email,
         mobile: form.mobile,
         newPassword: form.newPassword,
       });
       alert("Password reset successful. Please login.");
       setMode("login");
     } catch (error) {
-      alert(error?.response?.data?.message || "Request failed");
+      const status = error?.response?.status;
+      const serverMessage = error?.response?.data?.message;
+
+      if (status === 404) {
+        alert("Account service is not available on backend yet. Please redeploy backend and try again.");
+        return;
+      }
+
+      alert(serverMessage || "Request failed");
     } finally {
       setLoading(false);
     }
@@ -154,6 +183,13 @@ export default function Login() {
                 ? "Reset Password"
                 : "Login"}
         </button>
+
+        <Link
+          to="/admin/login"
+          className="block mt-4 text-center text-sm text-gray-600 underline"
+        >
+          Admin Login
+        </Link>
       </div>
     </div>
   );
