@@ -4,6 +4,10 @@ import api from "../utils/axiosClient";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+const CLEANING_CATEGORY_KEYWORDS = ["fish", "seafood", "meat", "chicken", "mutton", "prawn", "crab"];
+const isCleaningCategory = (name = "") =>
+  CLEANING_CATEGORY_KEYWORDS.some((keyword) => String(name).toLowerCase().includes(keyword));
+
 export default function Checkout() {
   const cart = useCart((s) => s.cart);
   const clearCart = useCart((s) => s.clearCart);
@@ -19,7 +23,10 @@ export default function Checkout() {
   const [paymentMode, setPaymentMode] = useState("COD");
 
   const subtotal = cart.reduce((sum, i) => sum + i.price * (i.quantity || 1), 0);
-  const cleaningCharge = 20;
+  const hasCleaningItem = cart.some((item) =>
+    isCleaningCategory(item?.categoryName || item?.category || item?.categoryId?.name || "")
+  );
+  const cleaningCharge = hasCleaningItem ? 20 : 0;
   const total = subtotal + cleaningCharge;
 
   const placeOrder = async () => {

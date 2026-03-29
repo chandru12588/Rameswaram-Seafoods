@@ -3,6 +3,10 @@ import api from "../utils/axiosClient";   // <--- using backend baseURL
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+const CLEANING_CATEGORY_KEYWORDS = ["fish", "seafood", "meat", "chicken", "mutton", "prawn", "crab"];
+const isCleaningCategory = (name = "") =>
+  CLEANING_CATEGORY_KEYWORDS.some((keyword) => String(name).toLowerCase().includes(keyword));
+
 export default function Shop() {
   const { user } = useAuth();
 
@@ -48,6 +52,13 @@ export default function Shop() {
     if (!customer.name || !customer.mobile || !customer.address)
       return alert("Please fill customer details");
 
+    const subtotal = cart.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
+    const hasCleaningItem = cart.some((item) =>
+      isCleaningCategory(item?.categoryName || item?.category || item?.categoryId?.name || "")
+    );
+    const cleaningCharge = hasCleaningItem ? 20 : 0;
+    const total = subtotal + cleaningCharge;
+
     const orderData = {
       customerName: customer.name,
       customerMobile: customer.mobile,
@@ -59,14 +70,15 @@ export default function Shop() {
         name:c.name,
         price:c.price,
         quantity:c.qty,
-        total:c.qty*c.price
+        total:c.qty*c.price,
+        categoryName: c?.categoryName || c?.category || c?.categoryId?.name || ""
       })),
     };
 
     await api.post("/orders/create", orderData);
 
     if (paymentMode==="UPI") 
-      payWithUPI(orderData.totalAmount);
+      payWithUPI(total);
 
     alert("🎉 Order placed successfully!");
     setCart([]);
@@ -182,7 +194,14 @@ export default function Shop() {
 
           {paymentMode==="UPI" && (
             <button className="bg-purple-600 text-white w-full py-2 rounded mt-3"
-              onClick={()=>payWithUPI(cart.reduce((t,i)=>t+i.qty*i.price,0))}>
+              onClick={() => {
+                const subtotal = cart.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
+                const hasCleaningItem = cart.some((item) =>
+                  isCleaningCategory(item?.categoryName || item?.category || item?.categoryId?.name || "")
+                );
+                const total = subtotal + (hasCleaningItem ? 20 : 0);
+                payWithUPI(total);
+              }}>
               Pay via UPI
             </button>
           )}
