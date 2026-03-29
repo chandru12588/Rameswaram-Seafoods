@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
 
@@ -205,12 +205,6 @@ export default function Login() {
                 : "Login"}
         </button>
 
-        <Link
-          to="/admin/login"
-          className="block mt-4 text-center text-sm text-gray-600 underline"
-        >
-          Admin Login
-        </Link>
       </div>
     </div>
   );
