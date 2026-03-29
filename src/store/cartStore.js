@@ -1,31 +1,41 @@
 import { create } from "zustand";
 
+const qtyStep = (item) => (String(item?.unit || "").toLowerCase() === "kg" ? 0.5 : 1);
+const minQty = (item) => (String(item?.unit || "").toLowerCase() === "kg" ? 0.5 : 1);
+const roundQty = (value) => Number(value.toFixed(2));
+
 export const useCart = create((set) => ({
   cart: [],
 
   addToCart: (item) =>
     set((s) => {
       const exists = s.cart.find(p => p._id === item._id);
+      const addedQty = roundQty(Number(item.quantity ?? qtyStep(item)));
       if (exists) {
+        const step = qtyStep(exists);
         return {
           cart: s.cart.map(p =>
             p._id === item._id
-              ? { ...p, quantity: (p.quantity || 1) + 1 }
+              ? { ...p, quantity: roundQty((p.quantity || minQty(p)) + (item.quantity ? addedQty : step)) }
               : p
           )
         };
       }
-      return { cart: [...s.cart, { ...item, quantity: 1 }] };
+      return { cart: [...s.cart, { ...item, quantity: addedQty }] };
     }),
 
   increaseQty: (id) =>
     set(s => ({
-      cart: s.cart.map(p => p._id === id ? { ...p, quantity:p.quantity+1 } : p)
+      cart: s.cart.map(p => p._id === id ? { ...p, quantity: roundQty((p.quantity || minQty(p)) + qtyStep(p)) } : p)
     })),
 
   decreaseQty: (id) =>
     set(s => ({
-      cart: s.cart.map(p => p._id === id && p.quantity>1 ? { ...p, quantity:p.quantity-1 } : p)
+      cart: s.cart.map(p => {
+        if (p._id !== id) return p;
+        const next = roundQty((p.quantity || minQty(p)) - qtyStep(p));
+        return next >= minQty(p) ? { ...p, quantity: next } : p;
+      })
     })),
 
   removeFromCart: (id) =>

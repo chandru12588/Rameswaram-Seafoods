@@ -38,14 +38,17 @@ export default function OrderSuccess() {
       data.paymentMode === "Online-UPI" || data.paymentMode === "UPI"
         ? "Paid"
         : (data.paymentStatus || "Pending");
+    const subtotal = data.subtotal || 0;
+    const cleaningCharge = data.cleaningCharge || 0;
+    const deliveryCharge = data.deliveryCharge || 20;
 
     const msg = `New Order Received\n------------------------------\nOrder ID: ${id}\n\nCustomer: ${data.name}\nMobile: ${data.phone}\nAddress: ${data.address}\n\nItems:\n${data.items
       .map(
-        (i) => `- ${i.name} x ${i.quantity || i.qty || 1}\n  Rs ${(i.quantity || i.qty || 1) * i.price}\n  Note: ${
+        (i) => `- ${i.name} x ${i.quantity || i.qty || 1} ${i.unit || ""}\n  Rs ${(i.quantity || i.qty || 1) * i.price}\n  Note: ${
           i.note || "No special request"
         }`
       )
-      .join("\n\n")}\n\nPayment Mode: ${paymentMode}\nPayment Status: ${paymentStatus}\nTotal Amount: Rs ${data.total}\n------------------------------\nPlease confirm this order.`;
+      .join("\n\n")}\n\nPayment Mode: ${paymentMode}\nPayment Status: ${paymentStatus}\nSubtotal: Rs ${subtotal}\nCut and Cleaning Charge: Rs ${cleaningCharge}\nDelivery Charge: Rs ${deliveryCharge}\nTotal Amount: Rs ${data.total}\n------------------------------\nPlease confirm this order.`;
 
     window.open(`https://wa.me/${owner}?text=${encodeURIComponent(msg)}`, "_blank");
   };

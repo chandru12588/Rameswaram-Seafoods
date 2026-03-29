@@ -27,7 +27,8 @@ export default function Checkout() {
     isCleaningCategory(item?.categoryName || item?.category || item?.categoryId?.name || "")
   );
   const cleaningCharge = hasCleaningItem ? 20 : 0;
-  const total = subtotal + cleaningCharge;
+  const deliveryCharge = 20;
+  const total = subtotal + cleaningCharge + deliveryCharge;
 
   const placeOrder = async () => {
     if (!form.name || !form.phone || !form.address) {
@@ -55,6 +56,7 @@ export default function Checkout() {
         items: cart,
         subtotal,
         cleaningCharge,
+        deliveryCharge,
         total,
         paymentMode,
         paymentStatus: paymentMode === "Online-UPI" ? "Paid" : "Pending",
@@ -104,7 +106,7 @@ export default function Checkout() {
         {cart.map((item, i) => (
           <div key={i} className="flex justify-between py-1 text-gray-700">
             <span>{item.name}</span>
-            <span>Rs {item.price} x {item.quantity || 1}</span>
+            <span>Rs {item.price} x {item.quantity || 1} {item.unit || ""}</span>
           </div>
         ))}
 
@@ -116,6 +118,10 @@ export default function Checkout() {
           <div className="flex justify-between">
             <span>Cleaning Charge</span>
             <span>Rs {cleaningCharge}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Delivery Charge</span>
+            <span>Rs {deliveryCharge}</span>
           </div>
           <div className="flex justify-between font-bold text-lg">
             <span>Total Amount</span>

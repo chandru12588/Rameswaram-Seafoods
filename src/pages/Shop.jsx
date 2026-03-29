@@ -48,14 +48,22 @@ export default function Shop() {
 
   const sendOwnerWhatsApp = (orderId, payload, total) => {
     const owner = "919655244550";
+    const itemsText = payload.items
+      .map((i) => `- ${i.name} x ${i.quantity} ${i.unit || ""} = Rs ${i.total}`)
+      .join("\n");
     const message = `New Order Received
 ------------------------------
 Order ID: ${orderId}
 Customer: ${payload.customerName}
 Mobile: ${payload.customerMobile}
 Address: ${payload.customerAddress}
+Items:
+${itemsText}
 Payment Mode: Online Payment (UPI)
 Payment Status: Paid
+Subtotal: Rs ${payload.subtotalAmount}
+Cut and Cleaning Charge: Rs ${payload.cleaningCharge}
+Delivery Charge: Rs ${payload.deliveryCharge}
 Total Amount: Rs ${total}
 ------------------------------
 Please confirm this order.`;
@@ -74,7 +82,8 @@ Please confirm this order.`;
       isCleaningCategory(item?.categoryName || item?.category || item?.categoryId?.name || "")
     );
     const cleaningCharge = hasCleaningItem ? 20 : 0;
-    const total = subtotal + cleaningCharge;
+    const deliveryCharge = 20;
+    const total = subtotal + cleaningCharge + deliveryCharge;
 
     const orderData = {
       customerName: customer.name,
@@ -82,11 +91,15 @@ Please confirm this order.`;
       customerEmail: customer.email || user?.email || "",
       customerAddress: customer.address,
       paymentMode,
+      subtotalAmount: subtotal,
+      cleaningCharge,
+      deliveryCharge,
       items: cart.map(c => ({
         productId:c._id,
         name:c.name,
         price:c.price,
         quantity:c.qty,
+        unit: c.unit || "",
         total:c.qty*c.price,
         categoryName: c?.categoryName || c?.category || c?.categoryId?.name || ""
       })),
@@ -221,7 +234,7 @@ Please confirm this order.`;
                 const hasCleaningItem = cart.some((item) =>
                   isCleaningCategory(item?.categoryName || item?.category || item?.categoryId?.name || "")
                 );
-                const total = subtotal + (hasCleaningItem ? 20 : 0);
+                const total = subtotal + (hasCleaningItem ? 20 : 0) + 20;
                 payWithUPI(total);
               }}>
               Pay via UPI
