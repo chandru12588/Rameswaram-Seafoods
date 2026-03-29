@@ -4,7 +4,7 @@ import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const ADMIN_EMAIL = "admin@rms.com";
+  const ADMIN_EMAILS = ["admin@rms.com", "owner@rms.com"];
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -43,8 +43,9 @@ export default function Login() {
       const email = normalizeEmail(form.email);
 
       if (mode === "signup") {
-        if (email === ADMIN_EMAIL) {
-          alert("admin@rms.com is for admin login only. Please use another email for user account.");
+        if (ADMIN_EMAILS.includes(email)) {
+          setMode("login");
+          alert("This email cannot be created in Sign Up. Please use Login with this email.");
           return;
         }
 
@@ -60,7 +61,7 @@ export default function Login() {
       }
 
       if (mode === "login") {
-        if (email === ADMIN_EMAIL) {
+        if (ADMIN_EMAILS.includes(email)) {
           const { data } = await api.post("/admin/login", {
             email,
             password: form.password,
