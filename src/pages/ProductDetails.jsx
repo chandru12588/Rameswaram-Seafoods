@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../utils/axiosClient";
 import { useCart } from "../store/cartStore";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -11,8 +12,6 @@ export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  const BASE_URL = import.meta.env.VITE_API_URL;
-
   useEffect(() => {
     api
       .get(`/products/${id}`)
@@ -21,6 +20,7 @@ export default function ProductDetails() {
   }, [id]);
 
   if (!product) return <div className="text-center p-20 text-lg">Loading...</div>;
+  const imageList = product.images?.length ? product.images : product.image ? [product.image] : [];
 
   const isKg = String(product.unit || "kg").toLowerCase() === "kg";
   const quantityOptions = isKg ? [0.5, 1, 1.5, 2, 2.5, 3] : [1, 2, 3, 4, 5];
@@ -37,11 +37,14 @@ export default function ProductDetails() {
   return (
     <div className="max-w-5xl mx-auto p-6 pt-32">
       <div className="flex gap-3 overflow-x-auto pb-3">
-        {product.images?.map((img, i) => (
+        {imageList.map((img, i) => (
           <img
             key={i}
-            src={img.startsWith("http") ? img : `${BASE_URL}/uploads/${img}`}
+            src={resolveImageUrl(img)}
             className="h-60 rounded shadow-md object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/logo.png";
+            }}
           />
         ))}
       </div>

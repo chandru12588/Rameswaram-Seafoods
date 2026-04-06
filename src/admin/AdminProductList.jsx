@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../utils/axiosClient";
 import { Link } from "react-router-dom";
+import { resolveProductImage } from "../utils/imageUrl";
 
 export default function AdminProductList() {
   const [products, setProducts] = useState([]);
@@ -36,12 +37,6 @@ export default function AdminProductList() {
     }
   };
 
-  const getImageUrl = (p) => {
-    const img = p.image || p.images?.[0];
-    if (!img) return "/no-image.png";
-    return img.startsWith("http") ? img : `${import.meta.env.VITE_API_URL}/uploads/${img}`;
-  };
-
   return (
     <div className="pt-24 p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
@@ -65,10 +60,10 @@ export default function AdminProductList() {
         {products.map((p) => (
           <div key={p._id} className="border rounded shadow hover:shadow-lg p-3 transition bg-white">
             <img
-              src={getImageUrl(p)}
+              src={resolveProductImage(p)}
               alt={p.name}
               className="w-full h-44 object-cover rounded mb-2"
-              onError={(e) => (e.target.src = "/no-image.png")}
+              onError={(e) => (e.currentTarget.src = "/logo.png")}
             />
 
             <h3 className="font-bold text-lg">{p.name}</h3>

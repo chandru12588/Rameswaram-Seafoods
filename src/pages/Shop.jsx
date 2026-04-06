@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../utils/axiosClient";   // <--- using backend baseURL
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { resolveProductImage } from "../utils/imageUrl";
 
 const CLEANING_CATEGORY_KEYWORDS = ["fish", "seafood", "meat", "chicken", "mutton", "prawn", "crab"];
 const isCleaningCategory = (name = "") =>
@@ -120,10 +121,6 @@ Please confirm this order.`;
     setShowForm(false);
   };
 
-
-  const backend = "https://rms-backend-44od.onrender.com";   // <--- for images
-
-
   return (
     <div className="p-6 max-w-7xl mx-auto pt-24">
 
@@ -174,8 +171,11 @@ Please confirm this order.`;
             <div key={p._id} className="border p-3 shadow rounded text-center hover:shadow-xl">
 
               <img
-                src={`${backend}/uploads/${p.images?.[0] || p.image}`}
+                src={resolveProductImage(p)}
                 className="w-full h-56 object-cover rounded mb-3"
+                onError={(e) => {
+                  e.currentTarget.src = "/logo.png";
+                }}
               />
 
               <h2 className="font-bold text-lg">{p.name}</h2>

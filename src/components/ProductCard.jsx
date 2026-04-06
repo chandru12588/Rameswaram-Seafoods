@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../store/cartStore";
+import { resolveProductImage } from "../utils/imageUrl";
 
 function NotesModal({ onClose, onAdd }) {
   const [note, setNote] = useState("");
@@ -44,11 +45,7 @@ export default function ProductCard({ item }) {
   const [selectedQty, setSelectedQty] = useState(1);
 
   const isKg = String(item.unit || "kg").toLowerCase() === "kg";
-  const BASE_URL = import.meta.env.VITE_API_URL;
-
-  const mainImage = item.images?.[0]?.startsWith("http")
-    ? item.images[0]
-    : `${BASE_URL}/uploads/${item.images?.[0]}`;
+  const mainImage = resolveProductImage(item);
 
   const handleAdd = (note) => {
     addToCart({ ...item, note, quantity: isKg ? selectedQty : 1 });
@@ -62,6 +59,9 @@ export default function ProductCard({ item }) {
         src={mainImage}
         className="w-full h-48 object-cover rounded cursor-pointer"
         onClick={() => navigate(`/product/${item._id}`)}
+        onError={(e) => {
+          e.currentTarget.src = "/logo.png";
+        }}
       />
 
       <h3 className="font-bold text-lg mt-3">{item.name}</h3>

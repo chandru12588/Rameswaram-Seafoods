@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../utils/axiosClient";
+import { resolveProductImage } from "../utils/imageUrl";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -28,13 +29,7 @@ export default function EditProduct() {
       const { data } = await api.get(`/products/${id}`);
       setProduct(data);
 
-      let img = data?.image || data?.images?.[0];
-
-      if (img && !img.startsWith("http")) {
-        img = `${import.meta.env.VITE_API_URL}/uploads/${img}`;
-      }
-
-      setPreview(img);
+      setPreview(resolveProductImage(data));
     } catch {
       alert("Product not found");
     }
@@ -115,7 +110,7 @@ export default function EditProduct() {
             src={preview}
             alt="Preview"
             className="w-48 h-48 object-cover rounded shadow border mx-auto"
-            onError={(e) => (e.target.src = "/no-image.png")}
+            onError={(e) => (e.currentTarget.src = "/logo.png")}
           />
         ) : (
           <div className="w-48 h-48 border flex items-center justify-center rounded mx-auto bg-gray-200 text-gray-500">

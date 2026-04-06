@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/axiosClient";
+import { resolveProductImage } from "../utils/imageUrl";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
@@ -20,15 +21,12 @@ export default function ProductList() {
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
-    await api.delete(`/products/delete/${id}`);   // 🔥 updated correct route
+    await api.delete(`/products/delete/${id}`);
     loadProducts();
   };
 
-  const backend = "https://rms-backend-44od.onrender.com"; // 🔥 for production images
-
   return (
     <div className="pt-28 max-w-6xl mx-auto px-6">
-
       <h2 className="text-3xl font-bold mb-6">Product List</h2>
 
       <table className="w-full border shadow">
@@ -43,25 +41,25 @@ export default function ProductList() {
         </thead>
 
         <tbody>
-          {products.map(p => (
+          {products.map((p) => (
             <tr key={p._id} className="text-center">
-
               <td className="border p-2">
                 <img
-                  src={`${backend}/uploads/${p.images?.[0]}`}
+                  src={resolveProductImage(p)}
                   className="h-14 w-14 object-cover rounded mx-auto"
+                  alt={p.name}
+                  onError={(e) => {
+                    e.currentTarget.src = "/logo.png";
+                  }}
                 />
               </td>
 
               <td className="border p-2">{p.name}</td>
-              <td className="border p-2">₹{p.price}</td>
+              <td className="border p-2">Rs {p.price}</td>
               <td className="border p-2">{p.categoryId?.name || "-"}</td>
 
               <td className="border p-2 flex gap-2 justify-center">
-                <Link
-                  to={`/admin/edit-product/${p._id}`}   // 🔥 fixed correct route format
-                  className="bg-blue-600 text-white px-3 py-1 rounded"
-                >
+                <Link to={`/admin/edit-product/${p._id}`} className="bg-blue-600 text-white px-3 py-1 rounded">
                   Edit
                 </Link>
 
@@ -72,11 +70,9 @@ export default function ProductList() {
                   Delete
                 </button>
               </td>
-
             </tr>
           ))}
         </tbody>
-
       </table>
     </div>
   );
