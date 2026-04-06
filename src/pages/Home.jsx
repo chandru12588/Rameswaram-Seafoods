@@ -18,12 +18,23 @@ const highlights = [
   },
 ];
 
-const gallery = ["/logo.png", "/logo.png", "/logo.png", "/logo.png"];
+const gallery = [
+  "https://pbs.twimg.com/media/D6NqF7RVUAA-jJx.jpg",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmCVpZQgR2fnM6W-CSEKaDR9XkMuKfq_5WJg&s",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzx6ajUULOUKY0yKj1zYJ9_07tPYrD4ZJIfQ&s",
+  "https://images.exoticamp.com/vendors/images/profile/Blog%20%20News%20Banners%20%20%20(18)_20240829T093457232Z.jpg",
+];
 
 export default function Home() {
   return (
     <div className="w-full">
-      <section className="relative h-[70vh] flex items-center justify-center bg-gradient-to-r from-teal-700 via-cyan-700 to-blue-700">
+      <section
+        className="relative h-[70vh] flex items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&w=1200')",
+        }}
+      >
         <div className="absolute inset-0 bg-black/25" />
 
         <div className="relative z-10 text-center text-white px-6 max-w-2xl">
@@ -74,6 +85,7 @@ export default function Home() {
               src={src}
               alt="Rameswaram Seafoods"
               className="rounded-lg shadow-md hover:scale-105 transition"
+              loading="lazy"
             />
           ))}
         </div>
@@ -105,9 +117,14 @@ export default function Home() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-6 right-6 bg-green-500 px-4 py-3 rounded-full shadow-xl hover:scale-105 transition-transform z-50 text-white font-semibold"
+        className="fixed bottom-6 right-6 bg-green-500 p-4 rounded-full shadow-xl hover:scale-110 transition-transform z-50 flex items-center justify-center"
       >
-        WhatsApp
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+          className="w-9 h-9"
+          alt="WhatsApp Chat"
+          loading="lazy"
+        />
       </a>
     </div>
   );
