@@ -42,9 +42,6 @@ export default function ProductDetails() {
             key={i}
             src={resolveImageUrl(img)}
             className="h-60 rounded shadow-md object-cover"
-            onError={(e) => {
-              e.currentTarget.src = "/logo.png";
-            }}
           />
         ))}
       </div>

@@ -63,7 +63,6 @@ export default function AdminProductList() {
               src={resolveProductImage(p)}
               alt={p.name}
               className="w-full h-44 object-cover rounded mb-2"
-              onError={(e) => (e.currentTarget.src = "/logo.png")}
             />
 
             <h3 className="font-bold text-lg">{p.name}</h3>

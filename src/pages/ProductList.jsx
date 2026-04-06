@@ -48,9 +48,6 @@ export default function ProductList() {
                   src={resolveProductImage(p)}
                   className="h-14 w-14 object-cover rounded mx-auto"
                   alt={p.name}
-                  onError={(e) => {
-                    e.currentTarget.src = "/logo.png";
-                  }}
                 />
               </td>
 

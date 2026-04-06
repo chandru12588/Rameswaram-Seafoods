@@ -59,9 +59,6 @@ export default function ProductCard({ item }) {
         src={mainImage}
         className="w-full h-48 object-cover rounded cursor-pointer"
         onClick={() => navigate(`/product/${item._id}`)}
-        onError={(e) => {
-          e.currentTarget.src = "/logo.png";
-        }}
       />
 
       <h3 className="font-bold text-lg mt-3">{item.name}</h3>

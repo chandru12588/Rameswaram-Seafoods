@@ -173,9 +173,6 @@ Please confirm this order.`;
               <img
                 src={resolveProductImage(p)}
                 className="w-full h-56 object-cover rounded mb-3"
-                onError={(e) => {
-                  e.currentTarget.src = "/logo.png";
-                }}
               />
 
               <h2 className="font-bold text-lg">{p.name}</h2>

@@ -110,7 +110,6 @@ export default function EditProduct() {
             src={preview}
             alt="Preview"
             className="w-48 h-48 object-cover rounded shadow border mx-auto"
-            onError={(e) => (e.currentTarget.src = "/logo.png")}
           />
         ) : (
           <div className="w-48 h-48 border flex items-center justify-center rounded mx-auto bg-gray-200 text-gray-500">
