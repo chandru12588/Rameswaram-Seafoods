@@ -7,27 +7,26 @@ function NotesModal({ onClose, onAdd }) {
   const [note, setNote] = useState("");
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-white p-5 rounded-lg w-[90%] max-w-md shadow-xl">
-        <h2 className="text-xl font-bold mb-2">Add Preparation Notes</h2>
-        <p className="text-sm text-gray-600 mb-2">
-          Tell us how you want your meat/fish prepared:
-          <br />No Liver, Small Cut, Medium Cut, Remove Head, Fillet, etc.
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-white p-5 rounded-2xl w-full max-w-md shadow-2xl border border-rose-100 fade-up">
+        <h2 className="text-xl font-extrabold mb-2 text-slate-900">Add Preparation Notes</h2>
+        <p className="text-sm text-slate-600 mb-3">
+          Tell us how you want your fish prepared. Example: No liver, small cut, medium cut, remove head, fillet.
         </p>
 
         <textarea
-          className="w-full border rounded p-2 min-h-[80px]"
+          className="w-full input-polish p-3 min-h-[90px]"
           placeholder="Example: Remove liver, medium cut pieces"
           value={note}
           onChange={(e) => setNote(e.target.value)}
         />
 
         <div className="flex justify-end gap-3 mt-4">
-          <button onClick={onClose} className="px-4 py-2 border rounded">
+          <button onClick={onClose} className="px-4 py-2 border border-slate-200 rounded-lg font-medium">
             Cancel
           </button>
 
-          <button onClick={() => onAdd(note)} className="px-4 py-2 bg-orange-500 text-white rounded">
+          <button onClick={() => onAdd(note)} className="px-4 py-2 rounded-lg animated-gradient-btn text-white font-semibold">
             Add to Cart
           </button>
         </div>
@@ -54,40 +53,41 @@ export default function ProductCard({ item }) {
   };
 
   return (
-    <div className="border p-4 shadow hover:shadow-lg rounded text-center">
+    <div className="premium-card p-4 text-center h-full flex flex-col">
       <img
         src={mainImage}
-        className="w-full h-48 object-cover rounded cursor-pointer"
+        alt={item.name}
+        className="w-full h-48 object-cover rounded-xl cursor-pointer"
         onClick={() => navigate(`/product/${item._id}`)}
       />
 
-      <h3 className="font-bold text-lg mt-3">{item.name}</h3>
-      <p className="text-teal-700 font-semibold">Rs {item.price}/{item.unit || "kg"}</p>
+      <h3 className="font-extrabold text-lg mt-3 text-slate-900">{item.name}</h3>
+      <p className="text-rose-700 font-bold">Rs {item.price}/{item.unit || "kg"}</p>
 
       {isKg && (
         <div className="mt-2 flex items-center justify-center gap-2 text-sm">
           <button
             onClick={() => setSelectedQty(0.5)}
-            className={`px-3 py-1 rounded border ${selectedQty === 0.5 ? "bg-teal-700 text-white" : "bg-white"}`}
+            className={`px-3 py-1.5 rounded-lg border ${selectedQty === 0.5 ? "bg-rose-700 text-white border-rose-700" : "bg-white border-slate-200"}`}
           >
             0.5 kg
           </button>
           <button
             onClick={() => setSelectedQty(1)}
-            className={`px-3 py-1 rounded border ${selectedQty === 1 ? "bg-teal-700 text-white" : "bg-white"}`}
+            className={`px-3 py-1.5 rounded-lg border ${selectedQty === 1 ? "bg-rose-700 text-white border-rose-700" : "bg-white border-slate-200"}`}
           >
             1 kg
           </button>
         </div>
       )}
 
-      <button onClick={() => setOpenNote(true)} className="mt-3 w-full bg-orange-500 text-white py-2 rounded">
+      <button onClick={() => setOpenNote(true)} className="mt-3 w-full animated-gradient-btn text-white py-2.5 rounded-lg font-semibold">
         Add to Cart
       </button>
 
       <button
         onClick={() => navigate(`/product/${item._id}`)}
-        className="block mt-2 text-sm text-blue-600 underline"
+        className="block mt-2 text-sm text-rose-700 underline underline-offset-2"
       >
         View Details
       </button>

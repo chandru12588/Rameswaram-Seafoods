@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import Loader from "../components/Loader";
@@ -104,26 +104,47 @@ export default function Login() {
   };
 
   return (
-    <div className="pt-28 px-4 pb-10">
-      <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow border">
-        <h2 className="text-2xl font-bold text-center mb-1">User Account</h2>
-        <p className="text-sm text-gray-500 text-center mb-6">Login using your email ID to place orders.</p>
+    <div className="pt-28 px-4 pb-12 relative overflow-hidden min-h-[78vh]">
+      <div className="absolute -top-20 -left-20 h-52 w-52 rounded-full bg-rose-200/35 blur-2xl" />
+      <div className="absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-orange-200/35 blur-2xl" />
 
-        <div className="grid grid-cols-3 gap-2 mb-5 text-sm">
+      <div className="max-w-md mx-auto mb-3 relative z-10">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 text-rose-700 font-semibold text-sm px-3 py-2 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 transition"
+        >
+          <span aria-hidden="true">←</span>
+          <span>Back to Home</span>
+        </Link>
+      </div>
+
+      <div className="max-w-md mx-auto premium-card p-6 md:p-7 fade-up relative z-10">
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <img
+            src="/logo.png"
+            alt="Rameswaram Seafoods"
+            className="h-16 w-16 md:h-20 md:w-20 rounded-full object-contain bg-white p-1.5 ring-2 ring-rose-200 shadow-sm"
+          />
+          <span className="text-2xl md:text-3xl font-extrabold text-rose-700 tracking-tight leading-none">Rameswaram Seafoods</span>
+        </div>
+        <h2 className="text-3xl font-extrabold text-center mb-1">User Account</h2>
+        <p className="text-sm text-slate-500 text-center mb-6">Login using your email ID to place orders.</p>
+
+        <div className="grid grid-cols-3 gap-2 mb-5 text-sm bg-slate-100 p-1 rounded-xl">
           <button
-            className={`py-2 rounded ${mode === "login" ? "bg-teal-700 text-white" : "bg-gray-100"}`}
+            className={`py-2 rounded-lg font-semibold transition ${mode === "login" ? "animated-gradient-btn text-white" : "text-slate-600"}`}
             onClick={() => setMode("login")}
           >
             Login
           </button>
           <button
-            className={`py-2 rounded ${mode === "signup" ? "bg-teal-700 text-white" : "bg-gray-100"}`}
+            className={`py-2 rounded-lg font-semibold transition ${mode === "signup" ? "animated-gradient-btn text-white" : "text-slate-600"}`}
             onClick={() => setMode("signup")}
           >
             Sign Up
           </button>
           <button
-            className={`py-2 rounded ${mode === "reset" ? "bg-teal-700 text-white" : "bg-gray-100"}`}
+            className={`py-2 rounded-lg font-semibold transition ${mode === "reset" ? "animated-gradient-btn text-white" : "text-slate-600"}`}
             onClick={() => setMode("reset")}
           >
             Reset
@@ -135,14 +156,14 @@ export default function Login() {
             <input
               type="text"
               placeholder="Full Name"
-              className="border p-3 w-full rounded mb-3"
+              className="input-polish p-3 w-full mb-3"
               value={form.name}
               onChange={(e) => onChange("name", e.target.value)}
             />
             <input
               type="tel"
               placeholder="Mobile Number"
-              className="border p-3 w-full rounded mb-3"
+              className="input-polish p-3 w-full mb-3"
               value={form.mobile}
               onChange={(e) => onChange("mobile", e.target.value)}
             />
@@ -152,7 +173,7 @@ export default function Login() {
         <input
           type="email"
           placeholder="Email ID"
-          className="border p-3 w-full rounded mb-3"
+          className="input-polish p-3 w-full mb-3"
           value={form.email}
           onChange={(e) => onChange("email", e.target.value)}
         />
@@ -162,14 +183,14 @@ export default function Login() {
             <input
               type="tel"
               placeholder="Mobile (optional)"
-              className="border p-3 w-full rounded mb-3"
+              className="input-polish p-3 w-full mb-3"
               value={form.mobile}
               onChange={(e) => onChange("mobile", e.target.value)}
             />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="New Password"
-              className="border p-3 w-full rounded mb-4"
+              className="input-polish p-3 w-full mb-4"
               value={form.newPassword}
               onChange={(e) => onChange("newPassword", e.target.value)}
             />
@@ -178,13 +199,13 @@ export default function Login() {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="border p-3 w-full rounded mb-4"
+            className="input-polish p-3 w-full mb-4"
             value={form.password}
             onChange={(e) => onChange("password", e.target.value)}
           />
         )}
 
-        <label className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+        <label className="flex items-center gap-2 text-sm text-slate-600 mb-4">
           <input
             type="checkbox"
             checked={showPassword}
@@ -196,7 +217,7 @@ export default function Login() {
         <button
           onClick={submit}
           disabled={loading}
-          className="bg-teal-700 text-white py-3 w-full rounded hover:bg-teal-800 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="animated-gradient-btn text-white py-3 w-full rounded-xl disabled:opacity-60 disabled:cursor-not-allowed font-bold"
         >
           {loading
             ? <Loader label="Please wait..." compact inverse />
@@ -206,7 +227,6 @@ export default function Login() {
                 ? "Reset Password"
                 : "Login"}
         </button>
-
       </div>
     </div>
   );

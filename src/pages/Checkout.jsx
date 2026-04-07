@@ -90,27 +90,27 @@ export default function Checkout() {
   };
 
   return (
-    <div className="pt-28 max-w-3xl mx-auto p-4 md:p-6 pb-20">
+    <div className="pt-28 pb-20 section-shell max-w-4xl">
       <button
         onClick={() => navigate("/products")}
-        className="mb-5 text-teal-700 hover:text-teal-900 font-semibold flex items-center gap-2"
+        className="mb-5 text-rose-700 hover:text-rose-800 font-semibold"
       >
         Back to Shop
       </button>
 
-      <h2 className="text-3xl font-bold mb-8 text-center">Checkout</h2>
+      <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-center">Checkout</h2>
 
-      <div className="bg-white p-5 md:p-6 rounded-lg shadow border">
-        <h3 className="text-xl font-semibold mb-3">Order Summary</h3>
+      <div className="premium-card p-5 md:p-6">
+        <h3 className="text-xl font-bold mb-3">Order Summary</h3>
 
         {cart.map((item, i) => (
-          <div key={i} className="flex justify-between py-1 text-gray-700">
+          <div key={i} className="flex justify-between py-1.5 text-slate-700 gap-3 text-sm md:text-base">
             <span>{item.name}</span>
-            <span>Rs {item.price} x {item.quantity || 1} {item.unit || ""}</span>
+            <span className="font-semibold">Rs {item.price} x {item.quantity || 1} {item.unit || ""}</span>
           </div>
         ))}
 
-        <div className="border-t mt-3 pt-3 space-y-1 text-sm">
+        <div className="border-t border-rose-100 mt-3 pt-3 space-y-1 text-sm">
           <div className="flex justify-between">
             <span>Subtotal</span>
             <span>Rs {subtotal}</span>
@@ -123,20 +123,20 @@ export default function Checkout() {
             <span>Delivery Charge</span>
             <span>Rs {deliveryCharge}</span>
           </div>
-          <div className="flex justify-between font-bold text-lg">
+          <div className="flex justify-between font-extrabold text-lg pt-1">
             <span>Total Amount</span>
-            <span>Rs {total}</span>
+            <span className="text-rose-700">Rs {total}</span>
           </div>
         </div>
       </div>
 
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-3">Customer Details</h3>
+      <div className="mt-8 premium-card p-5 md:p-6">
+        <h3 className="text-xl font-bold mb-3">Customer Details</h3>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <input
             placeholder="Full Name"
-            className="border p-3 rounded w-full focus:ring ring-teal-300"
+            className="input-polish p-3 w-full"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
@@ -144,7 +144,7 @@ export default function Checkout() {
           <input
             placeholder="Phone Number"
             type="tel"
-            className="border p-3 rounded w-full focus:ring ring-teal-300"
+            className="input-polish p-3 w-full"
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
           />
@@ -152,31 +152,31 @@ export default function Checkout() {
 
         <input
           placeholder="Email ID"
-          className="border p-3 rounded w-full mt-4"
+          className="input-polish p-3 w-full mt-4"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
         {!isLoggedIn && (
-          <p className="text-xs text-gray-500 mt-1">Email is optional. You can order without email.</p>
+          <p className="text-xs text-slate-500 mt-1">Email is optional. You can order without email.</p>
         )}
 
         <textarea
           placeholder="Full Delivery Address"
           rows="3"
-          className="border p-3 rounded w-full mt-4 focus:ring ring-teal-300"
+          className="input-polish p-3 w-full mt-4"
           onChange={(e) => setForm({ ...form, address: e.target.value })}
         />
       </div>
 
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-3">Payment Method</h3>
+      <div className="mt-8 premium-card p-5 md:p-6">
+        <h3 className="text-xl font-bold mb-3">Payment Method</h3>
 
-        <label className="flex gap-2 items-center cursor-pointer">
+        <label className="flex gap-2 items-center cursor-pointer font-medium">
           <input type="radio" checked={paymentMode === "COD"} onChange={() => setPaymentMode("COD")} />
           Cash On Delivery
         </label>
 
-        <label className="flex gap-2 items-center mt-3 cursor-pointer">
+        <label className="flex gap-2 items-center mt-3 cursor-pointer font-medium">
           <input
             type="radio"
             checked={paymentMode === "Online-UPI"}
@@ -188,7 +188,7 @@ export default function Checkout() {
 
       <button
         onClick={placeOrder}
-        className="mt-10 w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg text-lg font-semibold"
+        className="mt-10 w-full animated-gradient-btn text-white py-3.5 rounded-xl text-lg font-bold"
       >
         Pay and Place Order
       </button>

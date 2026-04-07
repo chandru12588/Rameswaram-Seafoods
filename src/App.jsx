@@ -43,7 +43,7 @@ export default function App() {
       <Navbar />
       <CartDrawer />
 
-      <div className="pt-24 min-h-screen bg-gray-50">
+      <div className="pt-24 min-h-screen app-shell">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

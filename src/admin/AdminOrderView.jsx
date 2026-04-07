@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../utils/axiosClient";
+import Loader from "../components/Loader";
 
 export default function AdminOrderView() {
   const { id } = useParams();
@@ -16,7 +17,7 @@ export default function AdminOrderView() {
   };
 
   if (!order) {
-    return <p className="text-center mt-28 text-lg font-semibold">Loading order...</p>;
+    return <Loader label="Loading order..." />;
   }
 
   return (

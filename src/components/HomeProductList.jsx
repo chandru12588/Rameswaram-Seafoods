@@ -15,11 +15,11 @@ export default function HomeProductList() {
   };
 
   return (
-    <section className="py-10 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-8">🐟 Our Fresh Products</h2>
+    <section className="section-shell py-12 md:py-16">
+      <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-8 text-rose-700">Our Fresh Products</h2>
 
-      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map(p => (
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {products.map((p) => (
           <ProductCard key={p._id} item={p} />
         ))}
       </div>

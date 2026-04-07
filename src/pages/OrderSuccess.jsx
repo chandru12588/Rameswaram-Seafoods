@@ -63,27 +63,29 @@ export default function OrderSuccess() {
   };
 
   return (
-    <div className="pt-32 text-center p-6">
-      <h1 className="text-3xl text-green-600 font-bold">Order Placed Successfully!</h1>
-      <p className="mt-2 text-lg">Order ID: <b>{id}</b></p>
+    <div className="pt-32 px-4 pb-10 section-shell max-w-2xl">
+      <div className="premium-card p-6 md:p-8 text-center">
+        <h1 className="text-3xl md:text-4xl text-green-600 font-extrabold">Order Placed Successfully!</h1>
+        <p className="mt-2 text-lg">Order ID: <b>{id}</b></p>
 
-      <button
-        onClick={downloadInvoice}
-        className="mt-5 bg-blue-600 text-white px-6 py-2 rounded block mx-auto"
-      >
-        Download Invoice
-      </button>
+        <button
+          onClick={downloadInvoice}
+          className="mt-6 bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-2.5 rounded-lg block mx-auto font-semibold"
+        >
+          Download Invoice
+        </button>
 
-      <button
-        onClick={() => sendWhatsApp(false)}
-        className="mt-3 bg-green-600 text-white px-6 py-2 rounded block mx-auto"
-      >
-        Send WhatsApp Confirmation
-      </button>
+        <button
+          onClick={() => sendWhatsApp(false)}
+          className="mt-3 bg-green-600 hover:bg-green-700 transition text-white px-6 py-2.5 rounded-lg block mx-auto font-semibold"
+        >
+          Send WhatsApp Confirmation
+        </button>
 
-      <Link to="/products" className="mt-6 inline-block text-teal-700 underline text-lg">
-        Continue Shopping
-      </Link>
+        <Link to="/products" className="mt-6 inline-block text-rose-700 underline text-lg font-semibold">
+          Continue Shopping
+        </Link>
+      </div>
     </div>
   );
 }

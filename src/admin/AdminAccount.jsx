@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/axiosClient";
 import { useAuth } from "../context/AuthContext";
+import Loader from "../components/Loader";
 
 export default function AdminAccount() {
   const { user } = useAuth();
@@ -60,7 +61,7 @@ export default function AdminAccount() {
           disabled={loading}
           className="bg-teal-700 text-white px-4 py-2 rounded w-full disabled:opacity-60"
         >
-          {loading ? "Updating..." : "Change Password"}
+          {loading ? <Loader label="Updating..." compact inverse /> : "Change Password"}
         </button>
       </div>
     </div>
