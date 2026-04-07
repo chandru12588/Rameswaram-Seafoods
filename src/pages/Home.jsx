@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
+const heroSlides = ["/home/rms2.avif", "/home/rms3.jpeg", "/home/rms5.jpg", "/home/velameen.webp"];
 
 const slides = [
   { src: "/home/hero.jpg", title: "Fresh arrivals from Rameswaram coast" },
@@ -8,7 +10,16 @@ const slides = [
 ];
 
 export default function Home() {
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
   const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const heroTimer = setInterval(() => {
+      setActiveHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 3000);
+
+    return () => clearInterval(heroTimer);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -28,8 +39,16 @@ export default function Home() {
 
   return (
     <div className="w-full">
-      <section className="relative min-h-[72vh] md:min-h-[78vh] bg-[url('/home/hero.jpg')] bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black/60" />
+      <section className="relative min-h-[72vh] md:min-h-[78vh] flex items-center justify-center overflow-hidden">
+        {heroSlides.map((image, index) => (
+          <img
+            key={image}
+            src={image}
+            alt={`Rameswaram hero ${index + 1}`}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${activeHeroSlide === index ? "opacity-100" : "opacity-0"}`}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/25 to-black/40" />
 
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-10 text-white text-xs md:text-sm px-4 py-2 rounded-full floating-pill fade-up">
           Daily Fresh Catch from Rameswaram
@@ -44,6 +63,17 @@ export default function Home() {
           <a href="/products" className="animated-gradient-btn inline-block mt-8 px-8 py-3.5 rounded-xl font-bold text-white fade-up-delay-2">
             Order Now
           </a>
+        </div>
+
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveHeroSlide(index)}
+              className={`h-2.5 rounded-full transition-all ${activeHeroSlide === index ? "w-7 bg-white" : "w-2.5 bg-white/70"}`}
+              aria-label={`Go to hero slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 
@@ -65,7 +95,7 @@ export default function Home() {
             className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/85 text-slate-900 font-bold"
             aria-label="Previous slide"
           >
-            ‹
+            {"<"}
           </button>
 
           <button
@@ -73,7 +103,7 @@ export default function Home() {
             className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/85 text-slate-900 font-bold"
             aria-label="Next slide"
           >
-            ›
+            {">"}
           </button>
 
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
