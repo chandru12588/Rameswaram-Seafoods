@@ -110,7 +110,7 @@ export default function AddProduct() {
           <option value="8248579662">Spice Number (8248579662)</option>
         </select>
 
-        {/* Multiple Image Upload */
+        {/* Multiple Image Upload */}
         <input type="file" accept="image/*" multiple className="border p-2 w-full"
           onChange={handleImageUpload} />
 

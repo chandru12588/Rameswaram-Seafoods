@@ -3,6 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../store/cartStore";
 import { resolveProductImage } from "../utils/imageUrl";
 
+const CLEANING_CATEGORY_KEYWORDS = ["fish", "seafood", "meat", "chicken", "mutton", "prawn", "crab"];
+const GROCERY_SPICE_KEYWORDS = ["spice", "grocery", "groceries", "masala", "dal", "pulses", "rice", "flour"];
+const isCleaningCategory = (name = "") =>
+  CLEANING_CATEGORY_KEYWORDS.some((keyword) => String(name).toLowerCase().includes(keyword));
+const isGrocerySpiceCategory = (name = "") =>
+  GROCERY_SPICE_KEYWORDS.some((keyword) => String(name).toLowerCase().includes(keyword));
+
 function NotesModal({ onClose, onAdd }) {
   const [note, setNote] = useState("");
 
@@ -15,7 +22,7 @@ function NotesModal({ onClose, onAdd }) {
         </p>
 
         <textarea
-          className="w-full input-polish p-3 min-h-[90px]"
+          className="w-full input-polish p-3 min-h-24"
           placeholder="Example: Remove liver, medium cut pieces"
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -40,21 +47,45 @@ export default function ProductCard({ item }) {
   const addToCart = useCart((s) => s.addToCart);
   const toggleCart = useCart((s) => s.toggleCart);
 
-  const minOrderQty = item.minOrderQty || (String(item.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
+  const isKg = String(item.unit || "kg").toLowerCase() === "kg";
+  const isGrocerySpice = isGrocerySpiceCategory(item.categoryId?.name || item.categoryName || item.category || "") || item.whatsappNumber === "8248579662";
+
+  const minOrderQty = isGrocerySpice && item.minOrderQty && Number(item.minOrderQty) > 0
+    ? Number(item.minOrderQty)
+    : isKg
+    ? 0.5
+    : 1;
+
   const [openNote, setOpenNote] = useState(false);
   const [selectedQty, setSelectedQty] = useState(minOrderQty);
 
-  const isKg = String(item.unit || "kg").toLowerCase() === "kg";
-  const mainImage = resolveProductImage(item);
-
+  const qtyStep = isKg && minOrderQty < 1 ? 0.5 : 1;
   const quantityOptions = isKg
-    ? [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2]
+    ? isGrocerySpice
+      ? Array.from(
+          { length: Math.floor((25 - minOrderQty) / qtyStep) + 1 },
+          (_, index) => Number((minOrderQty + index * qtyStep).toFixed(2))
+        )
+      : [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2]
     : [minOrderQty, minOrderQty + 1, minOrderQty + 2, minOrderQty + 3, minOrderQty + 4];
 
-  const handleAdd = (note) => {
+  const useSelect = isKg && isGrocerySpice && quantityOptions.length > 7;
+  const showNotes = isCleaningCategory(item.categoryId?.name || item.categoryName || item.category || "");
+
+  const mainImage = resolveProductImage(item);
+
+  const handleAdd = (note = "") => {
     addToCart({ ...item, note, quantity: isKg ? selectedQty : 1 });
     toggleCart();
     setOpenNote(false);
+  };
+
+  const handleButtonClick = () => {
+    if (showNotes) {
+      setOpenNote(true);
+    } else {
+      handleAdd("");
+    }
   };
 
   return (
@@ -68,22 +99,39 @@ export default function ProductCard({ item }) {
 
       <h3 className="font-extrabold text-lg mt-3 text-slate-900">{item.name}</h3>
       <p className="text-rose-700 font-bold">Rs {item.price}/{item.unit || "kg"}</p>
+      {minOrderQty > 0 && (
+        <p className="text-sm text-slate-500 mt-1">Min order: {minOrderQty} {item.unit || "kg"}</p>
+      )}
 
       {isKg && (
         <div className="mt-2 flex items-center justify-center gap-2 text-sm flex-wrap">
-          {quantityOptions.map((qty) => (
-            <button
-              key={qty}
-              onClick={() => setSelectedQty(qty)}
-              className={`px-3 py-1.5 rounded-lg border ${selectedQty === qty ? "bg-rose-700 text-white border-rose-700" : "bg-white border-slate-200"}`}
+          {useSelect ? (
+            <select
+              value={selectedQty}
+              onChange={(e) => setSelectedQty(Number(e.target.value))}
+              className="input-polish p-2 rounded-lg border"
             >
-              {qty} kg
-            </button>
-          ))}
+              {quantityOptions.map((qty) => (
+                <option key={qty} value={qty}>
+                  {qty} kg
+                </option>
+              ))}
+            </select>
+          ) : (
+            quantityOptions.map((qty) => (
+              <button
+                key={qty}
+                onClick={() => setSelectedQty(qty)}
+                className={`px-3 py-1.5 rounded-lg border ${selectedQty === qty ? "bg-rose-700 text-white border-rose-700" : "bg-white border-slate-200"}`}
+              >
+                {qty} kg
+              </button>
+            ))
+          )}
         </div>
       )}
 
-      <button onClick={() => setOpenNote(true)} className="mt-3 w-full animated-gradient-btn text-white py-2.5 rounded-lg font-semibold">
+      <button onClick={handleButtonClick} className="mt-3 w-full animated-gradient-btn text-white py-2.5 rounded-lg font-semibold">
         Add to Cart
       </button>
 
@@ -94,7 +142,7 @@ export default function ProductCard({ item }) {
         View Details
       </button>
 
-      {openNote && <NotesModal onClose={() => setOpenNote(false)} onAdd={handleAdd} />}
+      {showNotes && openNote && <NotesModal onClose={() => setOpenNote(false)} onAdd={handleAdd} />}
     </div>
   );
 }

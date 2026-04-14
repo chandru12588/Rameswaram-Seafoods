@@ -28,10 +28,25 @@ export default function ProductDetails() {
   if (!product) return <Loader label="Loading product details..." />;
   const imageList = product.images?.length ? product.images : product.image ? [product.image] : [];
 
-  const minOrderQty = product?.minOrderQty || (String(product?.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
   const isKg = String(product.unit || "kg").toLowerCase() === "kg";
+  const isGrocerySpice = ["spice", "grocery", "groceries", "masala", "dal", "pulses", "rice", "flour"].some((keyword) =>
+    String(product.categoryId?.name || product.category || "").toLowerCase().includes(keyword)
+  ) || product.whatsappNumber === "8248579662";
+
+  const minOrderQty = isGrocerySpice && product?.minOrderQty && Number(product.minOrderQty) > 0
+    ? Number(product.minOrderQty)
+    : isKg
+    ? 0.5
+    : 1;
+  const qtyStep = isKg && minOrderQty < 1 ? 0.5 : 1;
+  const maxQty = isKg && isGrocerySpice ? 25 : minOrderQty + 4;
   const quantityOptions = isKg
-    ? [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2, minOrderQty + 2.5]
+    ? isGrocerySpice
+      ? Array.from(
+          { length: Math.floor((maxQty - minOrderQty) / qtyStep) + 1 },
+          (_, index) => Number((minOrderQty + index * qtyStep).toFixed(2))
+        )
+      : [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2]
     : [minOrderQty, minOrderQty + 1, minOrderQty + 2, minOrderQty + 3, minOrderQty + 4];
 
   const handleAddToCart = () => {
@@ -82,7 +97,7 @@ export default function ProductDetails() {
           <select
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
-            className="input-polish p-2.5 min-w-[100px]"
+            className="input-polish p-2.5 min-w-24"
           >
             {quantityOptions.map((n) => (
               <option key={n} value={n}>
