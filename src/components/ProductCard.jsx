@@ -9,6 +9,10 @@ const isCleaningCategory = (name = "") =>
   CLEANING_CATEGORY_KEYWORDS.some((keyword) => String(name).toLowerCase().includes(keyword));
 const isGrocerySpiceCategory = (name = "") =>
   GROCERY_SPICE_KEYWORDS.some((keyword) => String(name).toLowerCase().includes(keyword));
+const isParuppuProduct = (name = "") =>
+  String(name).toLowerCase().includes("paruppu") || String(name).toLowerCase().includes("parupoo");
+const isParuppuProduct = (name = "") =>
+  String(name).toLowerCase().includes("paruppu") || String(name).toLowerCase().includes("parupoo");
 
 function NotesModal({ onClose, onAdd }) {
   const [note, setNote] = useState("");
@@ -48,10 +52,13 @@ export default function ProductCard({ item }) {
   const toggleCart = useCart((s) => s.toggleCart);
 
   const isKg = String(item.unit || "kg").toLowerCase() === "kg";
-  const isGrocerySpice = isGrocerySpiceCategory(item.categoryId?.name || item.categoryName || item.category || "") || item.whatsappNumber === "8248579662";
-
-  const minOrderQty = isGrocerySpice && item.minOrderQty && Number(item.minOrderQty) > 0
-    ? Number(item.minOrderQty)
+  const isParuppu = isParuppuProduct(item.name || item.productName || "");
+  const hasCustomMinQty = item.minOrderQty && Number(item.minOrderQty) > 0;
+  const declaredQty = hasCustomMinQty ? Number(item.minOrderQty) : undefined;
+  const minOrderQty = isParuppu
+    ? Math.max(declaredQty || 3, 3)
+    : hasCustomMinQty
+    ? declaredQty
     : isKg
     ? 0.5
     : 1;
@@ -59,17 +66,15 @@ export default function ProductCard({ item }) {
   const [openNote, setOpenNote] = useState(false);
   const [selectedQty, setSelectedQty] = useState(minOrderQty);
 
-  const qtyStep = isKg && minOrderQty < 1 ? 0.5 : 1;
+  const qtyStep = isParuppu ? 1 : isKg && minOrderQty < 1 ? 0.5 : 1;
   const quantityOptions = isKg
-    ? isGrocerySpice
-      ? Array.from(
-          { length: Math.floor((25 - minOrderQty) / qtyStep) + 1 },
-          (_, index) => Number((minOrderQty + index * qtyStep).toFixed(2))
-        )
-      : [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2]
+    ? Array.from(
+        { length: Math.floor((25 - minOrderQty) / qtyStep) + 1 },
+        (_, index) => Number((minOrderQty + index * qtyStep).toFixed(2))
+      )
     : [minOrderQty, minOrderQty + 1, minOrderQty + 2, minOrderQty + 3, minOrderQty + 4];
 
-  const useSelect = isKg && isGrocerySpice && quantityOptions.length > 7;
+  const useSelect = isKg && quantityOptions.length > 7;
   const showNotes = isCleaningCategory(item.categoryId?.name || item.categoryName || item.category || "");
 
   const mainImage = resolveProductImage(item);

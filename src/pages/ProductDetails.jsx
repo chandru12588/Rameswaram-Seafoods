@@ -19,7 +19,16 @@ export default function ProductDetails() {
       .get(`/products/${id}`)
       .then((res) => {
         setProduct(res.data);
-        const minQty = res.data.minOrderQty || (String(res.data.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
+        const isKg = String(res.data.unit || "kg").toLowerCase() === "kg";
+        const isParuppu = String(res.data.name || res.data.productName || "").toLowerCase().includes("paruppu") ||
+          String(res.data.name || res.data.productName || "").toLowerCase().includes("parupoo");
+        const minQty = isParuppu
+          ? Math.max(res.data.minOrderQty && Number(res.data.minOrderQty) > 0 ? Number(res.data.minOrderQty) : 3, 3)
+          : res.data.minOrderQty && Number(res.data.minOrderQty) > 0
+          ? Number(res.data.minOrderQty)
+          : isKg
+          ? 0.5
+          : 1;
         setQuantity(minQty);
       })
       .catch((err) => console.log(err));
@@ -29,24 +38,21 @@ export default function ProductDetails() {
   const imageList = product.images?.length ? product.images : product.image ? [product.image] : [];
 
   const isKg = String(product.unit || "kg").toLowerCase() === "kg";
-  const isGrocerySpice = ["spice", "grocery", "groceries", "masala", "dal", "pulses", "rice", "flour"].some((keyword) =>
-    String(product.categoryId?.name || product.category || "").toLowerCase().includes(keyword)
-  ) || product.whatsappNumber === "8248579662";
-
-  const minOrderQty = isGrocerySpice && product?.minOrderQty && Number(product.minOrderQty) > 0
+  const isParuppu = String(product.name || product.productName || "").toLowerCase().includes("paruppu") || String(product.name || product.productName || "").toLowerCase().includes("parupoo");
+  const hasCustomMinQty = product?.minOrderQty && Number(product.minOrderQty) > 0;
+  const minOrderQty = isParuppu
+    ? 3
+    : hasCustomMinQty
     ? Number(product.minOrderQty)
     : isKg
     ? 0.5
     : 1;
-  const qtyStep = isKg && minOrderQty < 1 ? 0.5 : 1;
-  const maxQty = isKg && isGrocerySpice ? 25 : minOrderQty + 4;
+  const qtyStep = isParuppu ? 1 : isKg && minOrderQty < 1 ? 0.5 : 1;
   const quantityOptions = isKg
-    ? isGrocerySpice
-      ? Array.from(
-          { length: Math.floor((maxQty - minOrderQty) / qtyStep) + 1 },
-          (_, index) => Number((minOrderQty + index * qtyStep).toFixed(2))
-        )
-      : [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2]
+    ? Array.from(
+        { length: Math.floor((25 - minOrderQty) / qtyStep) + 1 },
+        (_, index) => Number((minOrderQty + index * qtyStep).toFixed(2))
+      )
     : [minOrderQty, minOrderQty + 1, minOrderQty + 2, minOrderQty + 3, minOrderQty + 4];
 
   const handleAddToCart = () => {
