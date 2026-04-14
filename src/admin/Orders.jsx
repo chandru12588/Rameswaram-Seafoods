@@ -22,6 +22,20 @@ export default function Orders() {
     }
   };
 
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await api.delete(`/orders/${orderId}`);
+      setOrders(orders.filter(o => o._id !== orderId));
+      alert("Order deleted successfully");
+    } catch (err) {
+      alert(err?.response?.data?.message || "Failed to delete order");
+    }
+  };
+
   return (
     <div className="pt-24 p-6 max-w-7xl mx-auto">
       <Link
@@ -86,6 +100,13 @@ export default function Orders() {
                     className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
                   >
                     View
+                  </button>
+
+                  <button
+                    onClick={() => handleDeleteOrder(o._id)}
+                    className="bg-red-600 text-white px-2 py-1 rounded text-xs"
+                  >
+                    Delete
                   </button>
 
                   {(() => {
