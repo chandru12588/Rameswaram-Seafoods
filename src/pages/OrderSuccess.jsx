@@ -57,13 +57,15 @@ export default function OrderSuccess() {
     const cleaningCharge = data.cleaningCharge || 0;
     const deliveryCharge = data.deliveryCharge || 20;
 
+    const cleaningLine = cleaningCharge > 0 ? `Cut and Cleaning Charge: Rs ${cleaningCharge}\n` : "";
+
     const msg = `New Order Received\n------------------------------\nOrder ID: ${id}\n\nCustomer: ${data.name}\nMobile: ${data.phone}\nAddress: ${data.address}\n\nItems:\n${data.items
       .map(
         (i) => `- ${i.name} x ${i.quantity || i.qty || 1} ${i.unit || ""}\n  Rs ${(i.quantity || i.qty || 1) * i.price}\n  Note: ${
           i.note || "No special request"
         }`
       )
-      .join("\n\n")}\n\nPayment Mode: ${paymentMode}\nPayment Status: ${paymentStatus}\nSubtotal: Rs ${subtotal}\nCut and Cleaning Charge: Rs ${cleaningCharge}\nDelivery Charge: Rs ${deliveryCharge}\nTotal Amount: Rs ${data.total}\n------------------------------\nPlease confirm this order.`;
+      .join("\n\n")}\n\nPayment Mode: ${paymentMode}\nPayment Status: ${paymentStatus}\nSubtotal: Rs ${subtotal}\n${cleaningLine}Delivery Charge: Rs ${deliveryCharge}\nTotal Amount: Rs ${data.total}\n------------------------------\nPlease confirm this order.`;
 
     const whatsappUrl = `https://wa.me/${owner}?text=${encodeURIComponent(msg)}`;
     if (autoRoute) {

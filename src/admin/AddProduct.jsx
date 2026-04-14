@@ -12,6 +12,7 @@ export default function AddProduct() {
   const [images, setImages] = useState([]);
   const [description, setDescription] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("919655244550");
+  const [minOrderQty, setMinOrderQty] = useState(0.5);
 
   // 🔥 Load categories from deployed backend
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function AddProduct() {
       form.append("categoryId", categoryId);
       form.append("description", description);
       form.append("whatsappNumber", whatsappNumber);
+      form.append("minOrderQty", minOrderQty);
 
       images.forEach(img => form.append("images", img));
 
@@ -53,6 +55,7 @@ export default function AddProduct() {
       setImages([]);
       setDescription("");
       setWhatsappNumber("919655244550");
+      setMinOrderQty(0.5);
 
     } catch (err) {
       console.log(err);
@@ -92,12 +95,22 @@ export default function AddProduct() {
         <textarea placeholder="Description (optional)" className="border p-2 w-full h-24"
           value={description} onChange={(e)=>setDescription(e.target.value)} />
 
+        <input
+          type="number"
+          min="0"
+          step="0.5"
+          className="border p-2 w-full"
+          placeholder="Minimum order quantity (e.g. 3 for 3kg)"
+          value={minOrderQty}
+          onChange={(e) => setMinOrderQty(Number(e.target.value))}
+        />
+
         <select className="border p-2 w-full" value={whatsappNumber} onChange={(e)=>setWhatsappNumber(e.target.value)}>
           <option value="919655244550">Seafood Number (919655244550)</option>
           <option value="8248579662">Spice Number (8248579662)</option>
         </select>
 
-        {/* Multiple Image Upload */}
+        {/* Multiple Image Upload */
         <input type="file" accept="image/*" multiple className="border p-2 w-full"
           onChange={handleImageUpload} />
 

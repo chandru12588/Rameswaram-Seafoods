@@ -35,6 +35,16 @@ export default function Checkout() {
       return alert("Please fill all customer details");
     }
 
+    const invalidItem = cart.find((item) => {
+      const minQty = item.minOrderQty || (String(item.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
+      return (item.quantity || 1) < minQty;
+    });
+
+    if (invalidItem) {
+      const minQty = invalidItem.minOrderQty || (String(invalidItem.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
+      return alert(`Minimum order for ${invalidItem.name} is ${minQty} ${invalidItem.unit || "kg"}.`);
+    }
+
     const orderData = {
       items: cart.map((item) => ({
         ...item,
@@ -118,10 +128,12 @@ export default function Checkout() {
             <span>Subtotal</span>
             <span>Rs {subtotal}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Cleaning Charge</span>
-            <span>Rs {cleaningCharge}</span>
-          </div>
+          {cleaningCharge > 0 && (
+            <div className="flex justify-between">
+              <span>Cleaning Charge</span>
+              <span>Rs {cleaningCharge}</span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span>Delivery Charge</span>
             <span>Rs {deliveryCharge}</span>

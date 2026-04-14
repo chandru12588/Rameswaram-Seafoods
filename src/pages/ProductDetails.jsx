@@ -17,15 +17,22 @@ export default function ProductDetails() {
   useEffect(() => {
     api
       .get(`/products/${id}`)
-      .then((res) => setProduct(res.data))
+      .then((res) => {
+        setProduct(res.data);
+        const minQty = res.data.minOrderQty || (String(res.data.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
+        setQuantity(minQty);
+      })
       .catch((err) => console.log(err));
   }, [id]);
 
   if (!product) return <Loader label="Loading product details..." />;
   const imageList = product.images?.length ? product.images : product.image ? [product.image] : [];
 
+  const minOrderQty = product?.minOrderQty || (String(product?.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
   const isKg = String(product.unit || "kg").toLowerCase() === "kg";
-  const quantityOptions = isKg ? [0.5, 1, 1.5, 2, 2.5, 3] : [1, 2, 3, 4, 5];
+  const quantityOptions = isKg
+    ? [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2, minOrderQty + 2.5]
+    : [minOrderQty, minOrderQty + 1, minOrderQty + 2, minOrderQty + 3, minOrderQty + 4];
 
   const handleAddToCart = () => {
     addToCart({
@@ -63,6 +70,10 @@ export default function ProductDetails() {
         <p className="text-rose-700 text-xl font-bold mt-2">
           Rs {product.price} / {product.unit || "kg"}
         </p>
+
+        {minOrderQty > 0 && (
+          <p className="text-sm text-slate-600 mt-1">Minimum order: {minOrderQty} {product.unit || "kg"}</p>
+        )}
 
         <p className="mt-4 text-slate-600 leading-relaxed">{product.description}</p>
 

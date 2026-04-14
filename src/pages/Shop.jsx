@@ -33,10 +33,16 @@ export default function Shop() {
 
   // ================ Add to Cart =================
   const addToCart = (item) => {
+    const minQty = item.minOrderQty || (String(item.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
+    const step = String(item.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1;
     const exists = cart.find(c => c._id === item._id);
-    exists
-      ? setCart(cart.map(c => c._id === item._id ? { ...c, qty:c.qty+1 } : c))
-      : setCart([...cart, { ...item, qty:1 }]);
+
+    if (exists) {
+      setCart(cart.map(c => c._id === item._id ? { ...c, qty: Number((c.qty + step).toFixed(2)) } : c));
+      return;
+    }
+
+    setCart([...cart, { ...item, qty: minQty }]);
   };
 
 
@@ -60,6 +66,7 @@ export default function Shop() {
     const itemsText = payload.items
       .map((i) => `- ${i.name} x ${i.quantity} ${i.unit || ""} = Rs ${i.total}`)
       .join("\n");
+    const cleaningLine = payload.cleaningCharge > 0 ? `Cut and Cleaning Charge: Rs ${payload.cleaningCharge}\n` : "";
     const message = `New Order Received
 ------------------------------
 Order ID: ${orderId}
@@ -71,8 +78,7 @@ ${itemsText}
 Payment Mode: Online Payment (UPI)
 Payment Status: Paid
 Subtotal: Rs ${payload.subtotalAmount}
-Cut and Cleaning Charge: Rs ${payload.cleaningCharge}
-Delivery Charge: Rs ${payload.deliveryCharge}
+${cleaningLine}Delivery Charge: Rs ${payload.deliveryCharge}
 Total Amount: Rs ${total}
 ------------------------------
 Please confirm this order.`;
@@ -186,6 +192,9 @@ Please confirm this order.`;
 
               <h2 className="font-bold text-lg">{p.name}</h2>
               <p className="text-green-700 font-semibold">₹{p.price}/{p.unit}</p>
+              {p.minOrderQty > 0 && (
+                <p className="text-sm text-slate-500 mt-1">Min order: {p.minOrderQty} {p.unit}</p>
+              )}
 
               <button onClick={()=>addToCart(p)}
                 className="bg-orange-500 text-white w-full py-2 mt-2 rounded">

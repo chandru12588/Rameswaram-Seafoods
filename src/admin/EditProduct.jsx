@@ -14,6 +14,7 @@ export default function EditProduct() {
     categoryId: "",
     description: "",
     whatsappNumber: "",
+    minOrderQty: 0,
     image: "",
     images: []
   });
@@ -44,6 +45,7 @@ export default function EditProduct() {
     formData.append("categoryId", product.categoryId);
     formData.append("description", product.description);
     formData.append("whatsappNumber", product.whatsappNumber);
+    formData.append("minOrderQty", product.minOrderQty);
 
     if (imageFile) formData.append("images", imageFile);
 
@@ -100,6 +102,16 @@ export default function EditProduct() {
           placeholder="Description"
           value={product.description}
           onChange={(e) => setProduct({ ...product, description: e.target.value })}
+        />
+
+        <input
+          className="border p-3 w-full rounded"
+          type="number"
+          min="0"
+          step="0.5"
+          placeholder="Minimum order quantity"
+          value={product.minOrderQty}
+          onChange={(e) => setProduct({ ...product, minOrderQty: Number(e.target.value) })}
         />
 
         <select className="border p-3 w-full rounded"

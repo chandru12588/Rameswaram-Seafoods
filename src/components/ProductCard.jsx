@@ -40,11 +40,16 @@ export default function ProductCard({ item }) {
   const addToCart = useCart((s) => s.addToCart);
   const toggleCart = useCart((s) => s.toggleCart);
 
+  const minOrderQty = item.minOrderQty || (String(item.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1);
   const [openNote, setOpenNote] = useState(false);
-  const [selectedQty, setSelectedQty] = useState(1);
+  const [selectedQty, setSelectedQty] = useState(minOrderQty);
 
   const isKg = String(item.unit || "kg").toLowerCase() === "kg";
   const mainImage = resolveProductImage(item);
+
+  const quantityOptions = isKg
+    ? [minOrderQty, minOrderQty + 0.5, minOrderQty + 1, minOrderQty + 1.5, minOrderQty + 2]
+    : [minOrderQty, minOrderQty + 1, minOrderQty + 2, minOrderQty + 3, minOrderQty + 4];
 
   const handleAdd = (note) => {
     addToCart({ ...item, note, quantity: isKg ? selectedQty : 1 });
@@ -65,19 +70,16 @@ export default function ProductCard({ item }) {
       <p className="text-rose-700 font-bold">Rs {item.price}/{item.unit || "kg"}</p>
 
       {isKg && (
-        <div className="mt-2 flex items-center justify-center gap-2 text-sm">
-          <button
-            onClick={() => setSelectedQty(0.5)}
-            className={`px-3 py-1.5 rounded-lg border ${selectedQty === 0.5 ? "bg-rose-700 text-white border-rose-700" : "bg-white border-slate-200"}`}
-          >
-            0.5 kg
-          </button>
-          <button
-            onClick={() => setSelectedQty(1)}
-            className={`px-3 py-1.5 rounded-lg border ${selectedQty === 1 ? "bg-rose-700 text-white border-rose-700" : "bg-white border-slate-200"}`}
-          >
-            1 kg
-          </button>
+        <div className="mt-2 flex items-center justify-center gap-2 text-sm flex-wrap">
+          {quantityOptions.map((qty) => (
+            <button
+              key={qty}
+              onClick={() => setSelectedQty(qty)}
+              className={`px-3 py-1.5 rounded-lg border ${selectedQty === qty ? "bg-rose-700 text-white border-rose-700" : "bg-white border-slate-200"}`}
+            >
+              {qty} kg
+            </button>
+          ))}
         </div>
       )}
 

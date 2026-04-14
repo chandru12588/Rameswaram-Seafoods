@@ -1,7 +1,12 @@
 import { create } from "zustand";
 
 const qtyStep = (item) => (String(item?.unit || "").toLowerCase() === "kg" ? 0.5 : 1);
-const minQty = (item) => (String(item?.unit || "").toLowerCase() === "kg" ? 0.5 : 1);
+const minQty = (item) => {
+  if (item?.minOrderQty && Number(item.minOrderQty) > 0) {
+    return Number(item.minOrderQty);
+  }
+  return String(item?.unit || "kg").toLowerCase() === "kg" ? 0.5 : 1;
+};
 const roundQty = (value) => Number(value.toFixed(2));
 
 export const useCart = create((set) => ({
