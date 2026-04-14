@@ -13,6 +13,7 @@ export default function EditProduct() {
     unit: "",
     categoryId: "",
     description: "",
+    whatsappNumber: "",
     image: "",
     images: []
   });
@@ -42,6 +43,7 @@ export default function EditProduct() {
     formData.append("unit", product.unit);
     formData.append("categoryId", product.categoryId);
     formData.append("description", product.description);
+    formData.append("whatsappNumber", product.whatsappNumber);
 
     if (imageFile) formData.append("images", imageFile);
 
@@ -99,6 +101,14 @@ export default function EditProduct() {
           value={product.description}
           onChange={(e) => setProduct({ ...product, description: e.target.value })}
         />
+
+        <select className="border p-3 w-full rounded"
+          value={product.whatsappNumber}
+          onChange={(e) => setProduct({ ...product, whatsappNumber: e.target.value })}
+        >
+          <option value="919655244550">Seafood Number (919655244550)</option>
+          <option value="8248579662">Spice Number (8248579662)</option>
+        </select>
       </div>
 
       {/* Current Image preview */}

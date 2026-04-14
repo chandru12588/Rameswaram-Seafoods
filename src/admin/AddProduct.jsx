@@ -11,6 +11,7 @@ export default function AddProduct() {
   const [categoryId, setCategoryId] = useState("");
   const [images, setImages] = useState([]);
   const [description, setDescription] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("919655244550");
 
   // 🔥 Load categories from deployed backend
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function AddProduct() {
       form.append("unit", unit);
       form.append("categoryId", categoryId);
       form.append("description", description);
+      form.append("whatsappNumber", whatsappNumber);
 
       images.forEach(img => form.append("images", img));
 
@@ -50,6 +52,7 @@ export default function AddProduct() {
       setCategoryId("");
       setImages([]);
       setDescription("");
+      setWhatsappNumber("919655244550");
 
     } catch (err) {
       console.log(err);
@@ -88,6 +91,11 @@ export default function AddProduct() {
 
         <textarea placeholder="Description (optional)" className="border p-2 w-full h-24"
           value={description} onChange={(e)=>setDescription(e.target.value)} />
+
+        <select className="border p-2 w-full" value={whatsappNumber} onChange={(e)=>setWhatsappNumber(e.target.value)}>
+          <option value="919655244550">Seafood Number (919655244550)</option>
+          <option value="8248579662">Spice Number (8248579662)</option>
+        </select>
 
         {/* Multiple Image Upload */}
         <input type="file" accept="image/*" multiple className="border p-2 w-full"

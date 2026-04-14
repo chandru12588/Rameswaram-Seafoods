@@ -48,7 +48,15 @@ export default function Shop() {
   };
 
   const sendOwnerWhatsApp = (orderId, payload, total) => {
-    const owner = "919655244550";
+    // Define WhatsApp numbers
+    const SPICE_NUMBER = "8248579662";
+    const SEAFOOD_NUMBER = "919655244550";
+
+    // Check if order contains spice items (whatsappNumber == SPICE_NUMBER)
+    const hasSpiceItem = payload.items.some((i) => i.whatsappNumber === SPICE_NUMBER);
+
+    const owner = hasSpiceItem ? SPICE_NUMBER : SEAFOOD_NUMBER;
+
     const itemsText = payload.items
       .map((i) => `- ${i.name} x ${i.quantity} ${i.unit || ""} = Rs ${i.total}`)
       .join("\n");

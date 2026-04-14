@@ -33,7 +33,18 @@ export default function OrderSuccess() {
     const data = order || JSON.parse(localStorage.getItem("latestOrder"));
     if (!data) return;
 
-    const owner = "919655244550";
+    // Define WhatsApp numbers
+    const SPICE_NUMBER = "8248579662";
+    const SEAFOOD_NUMBER = "919655244550";
+
+    // Check if order contains spice items (whatsappNumber == SPICE_NUMBER)
+    const hasSpiceItem = data.items.some((i) => {
+      const itemData = i.productId || i; // in case populated or not
+      return itemData.whatsappNumber === SPICE_NUMBER;
+    });
+
+    const owner = hasSpiceItem ? SPICE_NUMBER : SEAFOOD_NUMBER;
+
     const paymentMode =
       data.paymentMode === "Online-UPI" || data.paymentMode === "UPI"
         ? "Online Payment (UPI)"

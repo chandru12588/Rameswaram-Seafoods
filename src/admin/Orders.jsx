@@ -88,16 +88,32 @@ export default function Orders() {
                     View
                   </button>
 
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-green-600 text-white px-2 py-1 rounded text-xs text-center"
-                    href={`https://wa.me/919655244550?text=*New Order Received*%0A%0A*Order ID:* ${o._id}%0A*Name:* ${o.customerName}%0A*Mobile:* ${o.customerMobile}%0A*Address:* ${o.customerAddress}%0A%0A*Items:*%0A${(o.items || [])
-                      .map((i) => `- ${i.name} x ${i.quantity}`)
-                      .join("%0A")}%0A%0A*Total:* INR ${o.totalAmount}%0A`}
-                  >
-                    WhatsApp
-                  </a>
+                  {(() => {
+                    // Define WhatsApp numbers
+                    const SPICE_NUMBER = "8248579662";
+                    const SEAFOOD_NUMBER = "919655244550";
+
+                    // Check if order contains spice items (whatsappNumber == SPICE_NUMBER)
+                    const hasSpiceItem = (o.items || []).some((i) => {
+                      const itemData = i.productId || i;
+                      return itemData.whatsappNumber === SPICE_NUMBER;
+                    });
+
+                    const owner = hasSpiceItem ? SPICE_NUMBER : SEAFOOD_NUMBER;
+
+                    return (
+                      <a
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-green-600 text-white px-2 py-1 rounded text-xs text-center"
+                        href={`https://wa.me/${owner}?text=*New Order Received*%0A%0A*Order ID:* ${o._id}%0A*Name:* ${o.customerName}%0A*Mobile:* ${o.customerMobile}%0A*Address:* ${o.customerAddress}%0A%0A*Items:*%0A${(o.items || [])
+                          .map((i) => `- ${i.name} x ${i.quantity}`)
+                          .join("%0A")}%0A%0A*Total:* INR ${o.totalAmount}%0A`}
+                      >
+                        WhatsApp
+                      </a>
+                    );
+                  })()}
                 </td>
               </tr>
             ))}

@@ -45,14 +45,30 @@ export default function AdminOrderView() {
         ))}
       </ul>
 
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`https://wa.me/919655244550?text=*New Order*%0A*Order ID:* ${order._id}%0A*Name:* ${order.customerName}%0A*Mobile:* ${order.customerMobile}%0A*Address:* ${order.customerAddress}%0A%0A${(order.items || []).map((item) => `- ${item.name} x ${item.quantity}`).join("%0A")}%0A%0A*Total:* INR ${order.totalAmount}`}
-        className="mt-5 bg-green-600 text-white px-6 py-2 rounded inline-block"
-      >
-        Send WhatsApp
-      </a>
+      {(() => {
+        // Define WhatsApp numbers
+        const SPICE_NUMBER = "8248579662";
+        const SEAFOOD_NUMBER = "919655244550";
+
+        // Check if order contains spice items (whatsappNumber == SPICE_NUMBER)
+        const hasSpiceItem = (order.items || []).some((i) => {
+          const itemData = i.productId || i;
+          return itemData.whatsappNumber === SPICE_NUMBER;
+        });
+
+        const owner = hasSpiceItem ? SPICE_NUMBER : SEAFOOD_NUMBER;
+
+        return (
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`https://wa.me/${owner}?text=*New Order*%0A*Order ID:* ${order._id}%0A*Name:* ${order.customerName}%0A*Mobile:* ${order.customerMobile}%0A*Address:* ${order.customerAddress}%0A%0A${(order.items || []).map((item) => `- ${item.name} x ${item.quantity}`).join("%0A")}%0A%0A*Total:* INR ${order.totalAmount}`}
+            className="mt-5 bg-green-600 text-white px-6 py-2 rounded inline-block"
+          >
+            Send WhatsApp
+          </a>
+        );
+      })()}
     </div>
   );
 }

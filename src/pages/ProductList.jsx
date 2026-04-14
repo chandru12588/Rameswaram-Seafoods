@@ -36,6 +36,7 @@ export default function ProductList() {
             <th className="p-2 border">Name</th>
             <th className="p-2 border">Price</th>
             <th className="p-2 border">Category</th>
+            <th className="p-2 border">WhatsApp</th>
             <th className="p-2 border">Actions</th>
           </tr>
         </thead>
@@ -54,6 +55,7 @@ export default function ProductList() {
               <td className="border p-2">{p.name}</td>
               <td className="border p-2">Rs {p.price}</td>
               <td className="border p-2">{p.categoryId?.name || "-"}</td>
+              <td className="border p-2">{p.whatsappNumber === "8248579662" ? "Spice" : "Seafood"}</td>
 
               <td className="border p-2 flex gap-2 justify-center">
                 <Link to={`/admin/edit-product/${p._id}`} className="bg-blue-600 text-white px-3 py-1 rounded">
