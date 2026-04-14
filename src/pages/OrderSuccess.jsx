@@ -33,17 +33,17 @@ export default function OrderSuccess() {
     const data = order || JSON.parse(localStorage.getItem("latestOrder"));
     if (!data) return;
 
-    // Define WhatsApp numbers
     const SPICE_NUMBER = "8248579662";
     const SEAFOOD_NUMBER = "919655244550";
 
-    // Check if order contains spice items (whatsappNumber == SPICE_NUMBER)
-    const hasSpiceItem = data.items.some((i) => {
-      const itemData = i.productId || i; // in case populated or not
-      return (itemData.whatsappNumber || i.whatsappNumber || "919655244550") === SPICE_NUMBER;
-    });
-
-    const owner = hasSpiceItem ? SPICE_NUMBER : SEAFOOD_NUMBER;
+    const itemsByOwner = (data.items || []).reduce((map, i) => {
+      const owner = (i.whatsappNumber || i.productId?.whatsappNumber || "919655244550") === SPICE_NUMBER
+        ? SPICE_NUMBER
+        : SEAFOOD_NUMBER;
+      if (!map[owner]) map[owner] = [];
+      map[owner].push(i);
+      return map;
+    }, {});
 
     const paymentMode =
       data.paymentMode === "Online-UPI" || data.paymentMode === "UPI"
@@ -53,26 +53,31 @@ export default function OrderSuccess() {
       data.paymentMode === "Online-UPI" || data.paymentMode === "UPI"
         ? "Paid"
         : (data.paymentStatus || "Pending");
-    const subtotal = data.subtotal || 0;
-    const cleaningCharge = data.cleaningCharge || 0;
     const deliveryCharge = data.deliveryCharge || 20;
 
-    const cleaningLine = cleaningCharge > 0 ? `Cut and Cleaning Charge: Rs ${cleaningCharge}\n` : "";
-
-    const msg = `New Order Received\n------------------------------\nOrder ID: ${id}\n\nCustomer: ${data.name}\nMobile: ${data.phone}\nAddress: ${data.address}\n\nItems:\n${data.items
-      .map(
-        (i) => `- ${i.name} x ${i.quantity || i.qty || 1} ${i.unit || ""}\n  Rs ${(i.quantity || i.qty || 1) * i.price}\n  Note: ${
-          i.note || "No special request"
-        }`
+    Object.entries(itemsByOwner).forEach(([owner, items]) => {
+      const subtotal = items.reduce((sum, i) => sum + ((i.quantity || i.qty || 1) * i.price || 0), 0);
+      const cleaningCharge = items.some((i) =>
+        String(i.categoryName || i.category || i.categoryId?.name || "").toLowerCase().match(/fish|seafood|meat|chicken|mutton|prawn|crab/)
       )
-      .join("\n\n")}\n\nPayment Mode: ${paymentMode}\nPayment Status: ${paymentStatus}\nSubtotal: Rs ${subtotal}\n${cleaningLine}Delivery Charge: Rs ${deliveryCharge}\nTotal Amount: Rs ${data.total}\n------------------------------\nPlease confirm this order.`;
+        ? data.cleaningCharge || 0
+        : 0;
+      const cleaningLine = cleaningCharge > 0 ? `Cut and Cleaning Charge: Rs ${cleaningCharge}\n` : "";
+      const ownerTotal = subtotal + cleaningCharge + deliveryCharge;
 
-    const whatsappUrl = `https://wa.me/${owner}?text=${encodeURIComponent(msg)}`;
-    if (autoRoute) {
-      window.location.href = whatsappUrl;
-      return;
-    }
-    window.open(whatsappUrl, "_blank");
+      const msg = `New Order Received\n------------------------------\nOrder ID: ${id}\n\nCustomer: ${data.name}\nMobile: ${data.phone}\nAddress: ${data.address}\n\nItems:\n${items
+        .map(
+          (i) => `- ${i.name} x ${i.quantity || i.qty || 1} ${i.unit || ""}\n  Rs ${(i.quantity || i.qty || 1) * i.price}\n  Note: ${i.note || "No special request"}`
+        )
+        .join("\n\n")}\n\nPayment Mode: ${paymentMode}\nPayment Status: ${paymentStatus}\nSubtotal: Rs ${subtotal}\n${cleaningLine}Delivery Charge: Rs ${deliveryCharge}\nTotal Amount: Rs ${ownerTotal}\n------------------------------\nPlease confirm this order.`;
+
+      const whatsappUrl = `https://wa.me/${owner}?text=${encodeURIComponent(msg)}`;
+      if (autoRoute && Object.keys(itemsByOwner).length === 1) {
+        window.location.href = whatsappUrl;
+      } else {
+        window.open(whatsappUrl, "_blank");
+      }
+    });
   };
 
   return (

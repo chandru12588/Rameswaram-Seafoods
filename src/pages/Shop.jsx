@@ -54,36 +54,31 @@ export default function Shop() {
   };
 
   const sendOwnerWhatsApp = (orderId, payload, total) => {
-    // Define WhatsApp numbers
     const SPICE_NUMBER = "8248579662";
     const SEAFOOD_NUMBER = "919655244550";
 
-    // Check if order contains spice items (whatsappNumber == SPICE_NUMBER)
-    const hasSpiceItem = payload.items.some((i) => i.whatsappNumber === SPICE_NUMBER);
+    const itemsByOwner = payload.items.reduce((map, item) => {
+      const owner = item.whatsappNumber === SPICE_NUMBER ? SPICE_NUMBER : SEAFOOD_NUMBER;
+      if (!map[owner]) map[owner] = [];
+      map[owner].push(item);
+      return map;
+    }, {});
 
-    const owner = hasSpiceItem ? SPICE_NUMBER : SEAFOOD_NUMBER;
+    Object.entries(itemsByOwner).forEach(([owner, items]) => {
+      const ownerSubtotal = items.reduce((sum, i) => sum + (i.total || i.price * i.quantity || 0), 0);
+      const hasCleaningItem = items.some((i) =>
+        isCleaningCategory(i.categoryName || i.category || i.categoryId?.name || "")
+      );
+      const cleaningLine = hasCleaningItem ? `Cut and Cleaning Charge: Rs ${payload.cleaningCharge}\n` : "";
+      const ownerTotal = ownerSubtotal + (hasCleaningItem ? payload.cleaningCharge : 0) + payload.deliveryCharge;
+      const itemsText = items
+        .map((i) => `- ${i.name} x ${i.quantity} ${i.unit || ""} = Rs ${i.total}`)
+        .join("\n");
 
-    const itemsText = payload.items
-      .map((i) => `- ${i.name} x ${i.quantity} ${i.unit || ""} = Rs ${i.total}`)
-      .join("\n");
-    const cleaningLine = payload.cleaningCharge > 0 ? `Cut and Cleaning Charge: Rs ${payload.cleaningCharge}\n` : "";
-    const message = `New Order Received
-------------------------------
-Order ID: ${orderId}
-Customer: ${payload.customerName}
-Mobile: ${payload.customerMobile}
-Address: ${payload.customerAddress}
-Items:
-${itemsText}
-Payment Mode: Online Payment (UPI)
-Payment Status: Paid
-Subtotal: Rs ${payload.subtotalAmount}
-${cleaningLine}Delivery Charge: Rs ${payload.deliveryCharge}
-Total Amount: Rs ${total}
-------------------------------
-Please confirm this order.`;
+      const message = `New Order Received\n------------------------------\nOrder ID: ${orderId}\nCustomer: ${payload.customerName}\nMobile: ${payload.customerMobile}\nAddress: ${payload.customerAddress}\nItems:\n${itemsText}\nPayment Mode: Online Payment (UPI)\nPayment Status: Paid\nSubtotal: Rs ${ownerSubtotal}\n${cleaningLine}Delivery Charge: Rs ${payload.deliveryCharge}\nTotal Amount: Rs ${ownerTotal}\n------------------------------\nPlease confirm this order.`;
 
-    window.open(`https://wa.me/${owner}?text=${encodeURIComponent(message)}`, "_blank");
+      window.open(`https://wa.me/${owner}?text=${encodeURIComponent(message)}`, "_blank");
+    });
   };
 
 
