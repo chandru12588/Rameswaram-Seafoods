@@ -11,8 +11,6 @@ const isGrocerySpiceCategory = (name = "") =>
   GROCERY_SPICE_KEYWORDS.some((keyword) => String(name).toLowerCase().includes(keyword));
 const isParuppuProduct = (name = "") =>
   String(name).toLowerCase().includes("paruppu") || String(name).toLowerCase().includes("parupoo");
-const isParuppuProduct = (name = "") =>
-  String(name).toLowerCase().includes("paruppu") || String(name).toLowerCase().includes("parupoo");
 
 function NotesModal({ onClose, onAdd }) {
   const [note, setNote] = useState("");
