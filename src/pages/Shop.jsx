@@ -104,12 +104,13 @@ Please confirm this order.`;
       cleaningCharge,
       deliveryCharge,
       items: cart.map(c => ({
-        productId:c._id,
-        name:c.name,
-        price:c.price,
-        quantity:c.qty,
+        productId: c._id,
+        name: c.name,
+        price: c.price,
+        quantity: c.qty,
+        whatsappNumber: c.whatsappNumber || "919655244550",
         unit: c.unit || "",
-        total:c.qty*c.price,
+        total: c.qty * c.price,
         categoryName: c?.categoryName || c?.category || c?.categoryId?.name || ""
       })),
     };

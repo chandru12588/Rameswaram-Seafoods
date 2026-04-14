@@ -40,7 +40,7 @@ export default function OrderSuccess() {
     // Check if order contains spice items (whatsappNumber == SPICE_NUMBER)
     const hasSpiceItem = data.items.some((i) => {
       const itemData = i.productId || i; // in case populated or not
-      return itemData.whatsappNumber === SPICE_NUMBER;
+      return (itemData.whatsappNumber || i.whatsappNumber || "919655244550") === SPICE_NUMBER;
     });
 
     const owner = hasSpiceItem ? SPICE_NUMBER : SEAFOOD_NUMBER;

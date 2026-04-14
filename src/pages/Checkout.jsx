@@ -36,7 +36,10 @@ export default function Checkout() {
     }
 
     const orderData = {
-      items: cart,
+      items: cart.map((item) => ({
+        ...item,
+        whatsappNumber: item.whatsappNumber || "919655244550",
+      })),
       customerName: form.name,
       customerMobile: form.phone,
       customerEmail: form.email,
