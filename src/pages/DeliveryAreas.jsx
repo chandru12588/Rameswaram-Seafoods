@@ -16,13 +16,13 @@ export default function DeliveryAreas() {
     <div className="pt-28 pb-12 section-shell max-w-5xl">
       <Seo
         title="Seafood Delivery Areas in Trichy"
-        description="Check seafood home delivery areas in Trichy covered by Rameswaram Fresh Seafoods."
+        description="Check seafood home delivery coverage across entire Trichy covered by Rameswaram Fresh Seafoods."
         path="/delivery-areas"
-        keywords="trichy seafood delivery areas, fish delivery areas trichy, seafood near me trichy"
+        keywords="entire trichy seafood delivery, fish delivery anywhere in trichy, seafood near me trichy"
       />
       <h1 className="text-3xl md:text-5xl font-extrabold text-rose-700">Delivery Areas in Trichy</h1>
       <p className="mt-4 text-slate-700">
-        We deliver fresh seafood across key Trichy localities with same-day service based on slot availability.
+        We deliver fresh seafood across the entire Trichy city area with same-day service based on slot availability.
       </p>
       <div className="premium-card mt-6 p-6">
         <h2 className="text-2xl font-extrabold">Covered Locations</h2>

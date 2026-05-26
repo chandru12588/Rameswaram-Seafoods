@@ -42,9 +42,9 @@ export default function Home() {
     <div className="w-full">
       <Seo
         title="Order Fresh Seafood in Trichy"
-        description="Order fresh fish, prawns, crab and cleaned seafood online in Trichy. Same-day delivery from Rameswaram Fresh Seafoods."
+        description="Order fresh fish, prawns, crab and cleaned seafood online anywhere in Trichy. Same-day delivery from Rameswaram Fresh Seafoods."
         path="/"
-        keywords="seafood in trichy, order fish online trichy, fresh seafood delivery trichy, fish shop trichy, prawns in trichy, crab in trichy"
+        keywords="seafood anywhere in trichy, order fish online trichy, fresh seafood delivery entire trichy, fish shop trichy, prawns in trichy, crab in trichy"
         image="/home/hero.jpg"
       />
       <section className="relative min-h-[72vh] md:min-h-[78vh] flex items-center justify-center overflow-hidden">

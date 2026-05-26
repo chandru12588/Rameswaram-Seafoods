@@ -9,7 +9,7 @@ const faqSchema = {
       name: "Do you deliver seafood across Trichy?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. We deliver fresh seafood in Trichy, including major residential areas based on daily delivery slots.",
+        text: "Yes. We deliver fresh seafood across the entire Trichy city area, including major residential localities, based on daily delivery slots.",
       },
     },
     {
@@ -44,9 +44,9 @@ export default function TrichySeafoodDelivery() {
     <div className="pt-28 pb-12 section-shell max-w-5xl">
       <Seo
         title="Seafood Delivery in Trichy"
-        description="Looking for seafood delivery in Trichy? Order fresh fish, prawns, crab and cleaned seafood online from Rameswaram Fresh Seafoods."
+        description="Looking for seafood delivery anywhere in Trichy? Order fresh fish, prawns, crab and cleaned seafood online from Rameswaram Fresh Seafoods."
         path="/trichy-seafood-delivery"
-        keywords="seafood delivery trichy, fish delivery trichy, order seafood online trichy, cleaned fish trichy, fresh prawns trichy"
+        keywords="seafood delivery anywhere in trichy, fish delivery entire trichy, order seafood online trichy, cleaned fish trichy, fresh prawns trichy"
         image="/home/hero.jpg"
       />
 
@@ -56,9 +56,9 @@ export default function TrichySeafoodDelivery() {
         Seafood Delivery in Trichy
       </h1>
       <p className="text-slate-700 mt-4 text-base md:text-lg leading-relaxed">
-        Rameswaram Fresh Seafoods provides fresh seafood delivery in Trichy with hygienic
+        Rameswaram Fresh Seafoods provides fresh seafood delivery across entire Trichy with hygienic
         cleaning, careful packing, and reliable doorstep service. If you want to order sea
-        food in Trichy, our team helps you get daily fresh fish, prawns, and crab quickly.
+        food anywhere in Trichy, our team helps you get daily fresh fish, prawns, and crab quickly.
       </p>
 
       <div className="grid md:grid-cols-3 gap-4 mt-8">
@@ -91,7 +91,7 @@ export default function TrichySeafoodDelivery() {
         <div className="mt-4 space-y-4">
           <div>
             <h3 className="font-bold">Do you deliver seafood across Trichy?</h3>
-            <p className="text-slate-600 mt-1">Yes, we handle seafood delivery across major Trichy localities.</p>
+            <p className="text-slate-600 mt-1">Yes, we handle seafood delivery across the entire Trichy city area.</p>
           </div>
           <div>
             <h3 className="font-bold">Can I request fish cleaning?</h3>
