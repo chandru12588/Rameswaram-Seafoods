@@ -203,6 +203,18 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section-shell pb-16">
+        <div className="premium-card p-6 md:p-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-rose-700">Popular Trichy Searches</h2>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a className="px-4 py-2 rounded-lg bg-rose-50 text-rose-700 font-semibold" href="/trichy-seafood-delivery">Seafood Delivery in Trichy</a>
+            <a className="px-4 py-2 rounded-lg bg-rose-50 text-rose-700 font-semibold" href="/delivery-areas">Fish Delivery Areas in Trichy</a>
+            <a className="px-4 py-2 rounded-lg bg-rose-50 text-rose-700 font-semibold" href="/seafood-delivery-srirangam">Seafood Delivery in Srirangam</a>
+            <a className="px-4 py-2 rounded-lg bg-rose-50 text-rose-700 font-semibold" href="/seafood-delivery-kk-nagar-trichy">Seafood Delivery in KK Nagar</a>
+          </div>
+        </div>
+      </section>
+
       <a
         href="https://wa.me/919655244550?text=Hi%20I%20want%20to%20order%20fresh%20seafoods!"
         target="_blank"

@@ -45,6 +45,14 @@ export default function Footer() {
             </div>
           </div>
         </div>
+
+        <div className="mt-6 flex flex-wrap gap-2 justify-center">
+          <a href="/trichy-seafood-delivery" className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm font-semibold">Seafood Delivery in Trichy</a>
+          <a href="/delivery-areas" className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm font-semibold">Delivery Areas</a>
+          <a href="/cleaning-policy" className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm font-semibold">Cleaning Policy</a>
+          <a href="/payment-refund" className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm font-semibold">Payment & Refund</a>
+          <a href="/contact" className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm font-semibold">Contact</a>
+        </div>
       </div>
     </footer>
   );

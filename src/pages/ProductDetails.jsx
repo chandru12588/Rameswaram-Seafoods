@@ -65,14 +65,37 @@ export default function ProductDetails() {
     toggleCart();
   };
 
+  const hasDescription = String(product.description || "").trim().length > 0;
+  const categoryName = product?.categoryId?.name || product?.categoryName || "Seafood";
+  const seoDescription = `Buy ${product.name} online in Trichy from Rameswaram Fresh Seafoods. Category: ${categoryName}. Hygienic handling and doorstep delivery.`;
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: hasDescription
+      ? product.description
+      : `${product.name} available for seafood delivery in Trichy with quality handling.`,
+    brand: "Rameswaram Fresh Seafoods",
+    image: imageList.length ? resolveImageUrl(imageList[0]) : "https://rameswaram-seafoods.vercel.app/logo.png",
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "INR",
+      price: Number(product.price || 0),
+      availability: "https://schema.org/InStock",
+      url: `https://rameswaram-seafoods.vercel.app/product/${id}`,
+    },
+  };
+
   return (
     <div className="section-shell max-w-5xl p-1 pt-30 pb-10">
       <Seo
         title={`${product.name} in Trichy`}
-        description={`Buy ${product.name} online in Trichy at Rameswaram Fresh Seafoods. Fresh quality, hygienic cleaning, and doorstep delivery.`}
+        description={seoDescription}
         path={`/product/${id}`}
         keywords={`${product.name} trichy, buy ${product.name} online trichy, seafood delivery trichy`}
       />
+      <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       <div className="premium-card p-4 md:p-6">
         <button
           onClick={() => navigate("/")}
@@ -103,7 +126,18 @@ export default function ProductDetails() {
           <p className="text-sm text-slate-600 mt-1">Minimum order: {minOrderQty} {product.unit || "kg"}</p>
         )}
 
-        <p className="mt-4 text-slate-600 leading-relaxed">{product.description}</p>
+        <p className="mt-4 text-slate-600 leading-relaxed">
+          {hasDescription
+            ? product.description
+            : `${product.name} is available for seafood home delivery in Trichy. Freshly handled and packed for quality.`}
+        </p>
+
+        <div className="mt-5 p-4 rounded-xl bg-rose-50 border border-rose-100 text-sm text-slate-700">
+          <p><strong>Category:</strong> {categoryName}</p>
+          <p className="mt-1"><strong>Best For:</strong> Fry, curry, and home-style seafood cooking.</p>
+          <p className="mt-1"><strong>Service:</strong> Fresh packing with optional cleaning for eligible items.</p>
+          <p className="mt-1"><strong>Delivery:</strong> Doorstep seafood delivery in Trichy.</p>
+        </div>
 
         <div className="mt-6 flex items-center gap-3 flex-wrap">
           <span className="font-semibold">Quantity:</span>

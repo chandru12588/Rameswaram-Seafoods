@@ -24,12 +24,19 @@ import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Shop from "./pages/Shop";
 import TrichySeafoodDelivery from "./pages/TrichySeafoodDelivery";
+import DeliveryAreas from "./pages/DeliveryAreas";
+import CleaningPolicy from "./pages/CleaningPolicy";
+import PaymentRefund from "./pages/PaymentRefund";
+import ContactUs from "./pages/ContactUs";
+import AreaSrirangam from "./pages/AreaSrirangam";
+import AreaKKNagar from "./pages/AreaKKNagar";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CartDrawer from "./components/CartDrawer";
+import MobileStickyCTA from "./components/MobileStickyCTA";
 import { useAuth } from "./context/AuthContext";
 
 function AdminRoute({ children }) {
@@ -55,6 +62,12 @@ export default function App() {
           <Route path="/order-success/:id" element={<OrderSuccess />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/trichy-seafood-delivery" element={<TrichySeafoodDelivery />} />
+          <Route path="/delivery-areas" element={<DeliveryAreas />} />
+          <Route path="/cleaning-policy" element={<CleaningPolicy />} />
+          <Route path="/payment-refund" element={<PaymentRefund />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/seafood-delivery-srirangam" element={<AreaSrirangam />} />
+          <Route path="/seafood-delivery-kk-nagar-trichy" element={<AreaKKNagar />} />
 
           <Route
             path="/admin/dashboard"
@@ -141,6 +154,7 @@ export default function App() {
         </Routes>
       </div>
 
+      <MobileStickyCTA />
       <Footer />
     </Router>
   );
