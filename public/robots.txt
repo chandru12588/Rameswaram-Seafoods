@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rameswaram-seafoods.vercel.app/sitemap.xml

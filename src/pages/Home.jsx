@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Seo from "../components/Seo";
 
 const heroSlides = ["/home/rms2.avif", "/home/rms3.jpeg", "/home/rms5.jpg", "/home/velameen.webp"];
 
@@ -39,6 +40,13 @@ export default function Home() {
 
   return (
     <div className="w-full">
+      <Seo
+        title="Order Fresh Seafood in Trichy"
+        description="Order fresh fish, prawns, crab and cleaned seafood online in Trichy. Same-day delivery from Rameswaram Fresh Seafoods."
+        path="/"
+        keywords="seafood in trichy, order fish online trichy, fresh seafood delivery trichy, fish shop trichy, prawns in trichy, crab in trichy"
+        image="/home/hero.jpg"
+      />
       <section className="relative min-h-[72vh] md:min-h-[78vh] flex items-center justify-center overflow-hidden">
         {heroSlides.map((image, index) => (
           <img

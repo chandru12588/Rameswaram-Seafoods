@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../utils/axiosClient";
 import ProductCard from "../components/ProductCard";
+import Seo from "../components/Seo";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -24,6 +25,12 @@ export default function Products() {
 
   return (
     <div className="pt-28 pb-10 section-shell">
+      <Seo
+        title="Fresh Fish and Seafood Menu in Trichy"
+        description="Browse fresh seafood prices in Trichy. Buy fish, prawns, crab and more from Rameswaram Fresh Seafoods."
+        path="/products"
+        keywords="trichy seafood menu, fish price trichy, seafood shop trichy, online fish order trichy"
+      />
       <h2 className="text-3xl md:text-4xl font-extrabold mb-6 text-slate-900 fade-up">Fresh Meat and Seafood</h2>
 
       <div className="premium-card p-3 md:p-4 flex gap-3 mb-7 flex-wrap items-center fade-up-delay-1">

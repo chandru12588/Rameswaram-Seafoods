@@ -4,6 +4,7 @@ import api from "../utils/axiosClient";
 import { useCart } from "../store/cartStore";
 import { resolveImageUrl } from "../utils/imageUrl";
 import Loader from "../components/Loader";
+import Seo from "../components/Seo";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -66,6 +67,12 @@ export default function ProductDetails() {
 
   return (
     <div className="section-shell max-w-5xl p-1 pt-30 pb-10">
+      <Seo
+        title={`${product.name} in Trichy`}
+        description={`Buy ${product.name} online in Trichy at Rameswaram Fresh Seafoods. Fresh quality, hygienic cleaning, and doorstep delivery.`}
+        path={`/product/${id}`}
+        keywords={`${product.name} trichy, buy ${product.name} online trichy, seafood delivery trichy`}
+      />
       <div className="premium-card p-4 md:p-6">
         <button
           onClick={() => navigate("/")}
