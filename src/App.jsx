@@ -23,6 +23,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Shop from "./pages/Shop";
+import TrichySeafoodDelivery from "./pages/TrichySeafoodDelivery";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 
@@ -53,6 +54,7 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success/:id" element={<OrderSuccess />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/trichy-seafood-delivery" element={<TrichySeafoodDelivery />} />
 
           <Route
             path="/admin/dashboard"
