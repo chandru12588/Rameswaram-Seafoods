@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="border-t border-rose-100 bg-gradient-to-r from-rose-700 to-orange-600 text-white py-8">
       <div className="section-shell">
         <div className="text-center">
-          <p className="font-bold text-3xl md:text-4xl">Rameswaram Seafoods ® {new Date().getFullYear()}</p>
+          <p className="font-bold text-3xl md:text-4xl">Rameswaram Fresh Seafoods (R) {new Date().getFullYear()}</p>
           <p className="text-xl md:text-2xl opacity-95 mt-2">Fresh Seafoods Delivered Daily</p>
         </div>
 

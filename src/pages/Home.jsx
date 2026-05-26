@@ -128,7 +128,7 @@ export default function Home() {
             back the day&apos;s fresh catch. Every order supports this hardworking community, their boats, and their families.
           </p>
           <p className="text-slate-700 mt-3 leading-relaxed">
-            At Rameswaram Seafoods, we respect that journey from sea to home. We source carefully, clean hygienically, and deliver
+            At Rameswaram Fresh Seafoods, we respect that journey from sea to home. We source carefully, clean hygienically, and deliver
             quickly so customers in Trichy get authentic coastal freshness with trust.
           </p>
         </div>

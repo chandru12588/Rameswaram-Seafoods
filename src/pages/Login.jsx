@@ -122,10 +122,10 @@ export default function Login() {
         <div className="flex items-center justify-center gap-3 mb-3">
           <img
             src="/logo.png"
-            alt="Rameswaram Seafoods"
+            alt="Rameswaram Fresh Seafoods"
             className="h-16 w-16 md:h-20 md:w-20 rounded-full object-contain bg-white p-1.5 ring-2 ring-rose-200 shadow-sm"
           />
-          <span className="text-2xl md:text-3xl font-extrabold text-rose-700 tracking-tight leading-none">Rameswaram Seafoods</span>
+          <span className="text-2xl md:text-3xl font-extrabold text-rose-700 tracking-tight leading-none">Rameswaram Fresh Seafoods</span>
         </div>
         <h2 className="text-3xl font-extrabold text-center mb-1">User Account</h2>
         <p className="text-sm text-slate-500 text-center mb-6">Login using your email ID to place orders.</p>

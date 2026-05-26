@@ -85,7 +85,7 @@ export default function Checkout() {
             `After payment page will redirect`
         );
 
-        const upiUrl = `upi://pay?pa=9655244550-1@okbizaxis&pn=RMS%20Seafoods&am=${total}&cu=INR`;
+        const upiUrl = `upi://pay?pa=9655244550-1@okbizaxis&pn=Rameswaram%20Fresh%20Seafoods&am=${total}&cu=INR`;
         window.location.href = upiUrl;
 
         setTimeout(() => {

@@ -49,7 +49,7 @@ export default function Shop() {
   // =============== UPI Payment ===============
   const payWithUPI = (amount) => {
     const upiId = "9655244550-1@okbizaxis";
-    const url = `upi://pay?pa=${upiId}&pn=RMS%20Seafoods&am=${amount}&cu=INR&tn=Seafood Order`;
+    const url = `upi://pay?pa=${upiId}&pn=Rameswaram%20Fresh%20Seafoods&am=${amount}&cu=INR&tn=Seafood Order`;
     window.location.href = url;
   };
 

@@ -32,7 +32,9 @@ export default function Orders() {
       setOrders(orders.filter(o => o._id !== orderId));
       alert("Order deleted successfully");
     } catch (err) {
-      alert(err?.response?.data?.message || "Failed to delete order");
+      console.error("Delete order failed:", err?.response || err);
+      const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete order";
+      alert(`Delete failed: ${errorMessage}`);
     }
   };
 

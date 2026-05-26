@@ -8,7 +8,6 @@ import {
 import {
   Squares2X2Icon,
   BuildingStorefrontIcon,
-  ClipboardDocumentListIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useCart } from "../store/cartStore";
@@ -36,7 +35,7 @@ export default function Navbar() {
             className="h-14 w-14 md:h-20 md:w-20 rounded-full object-contain bg-white p-1.5 ring-2 ring-rose-200 shadow-sm"
             alt="Logo"
           />
-          <span className="hidden md:block text-[30px] lg:text-[34px] font-extrabold tracking-tight text-rose-700 leading-none">Rameswaram Seafoods</span>
+          <span className="hidden md:block text-[30px] lg:text-[34px] font-extrabold tracking-tight text-rose-700 leading-none">Rameswaram Fresh Seafoods</span>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
@@ -48,10 +47,6 @@ export default function Navbar() {
             <Link className="hover:text-rose-700 transition-colors inline-flex items-center gap-1.5" to="/">
               <BuildingStorefrontIcon className="h-5 w-5" />
               <span>Stores</span>
-            </Link>
-            <Link className="hover:text-rose-700 transition-colors inline-flex items-center gap-1.5" to="/products">
-              <ClipboardDocumentListIcon className="h-5 w-5" />
-              <span>Lab Reports</span>
             </Link>
             {!isLoggedIn && (
               <Link className="hover:text-rose-700 transition-colors inline-flex items-center gap-1.5" to="/login">
@@ -96,9 +91,6 @@ export default function Navbar() {
           </Link>
           <Link onClick={() => setOpen(false)} to="/products" className="block p-3.5 font-medium border-b border-rose-50">
             Categories
-          </Link>
-          <Link onClick={() => setOpen(false)} to="/products" className="block p-3.5 font-medium border-b border-rose-50">
-            Lab Reports
           </Link>
 
           {!isLoggedIn && (

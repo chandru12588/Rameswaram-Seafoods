@@ -8,7 +8,7 @@ export default function UPIPayment() {
 
   const amount = query.get("amount");
   const upi = query.get("upi");
-  const upiLink = `upi://pay?pa=${upi}&pn=RMS%20Seafoods&am=${amount}&cu=INR`;
+  const upiLink = `upi://pay?pa=${upi}&pn=Rameswaram%20Fresh%20Seafoods&am=${amount}&cu=INR`;
 
   return (
     <div className="p-10 text-center max-w-lg mx-auto">
