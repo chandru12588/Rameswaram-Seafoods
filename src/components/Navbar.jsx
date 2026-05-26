@@ -28,14 +28,14 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full nav-glass z-50">
-      <div className="section-shell flex justify-between items-center px-2 py-3 md:px-1 md:py-3.5">
+      <div className="w-full flex justify-between items-center px-3 py-3 md:px-8 md:py-3.5 lg:px-10">
         <div className="flex gap-3 md:gap-4 items-center cursor-pointer" onClick={() => navigate("/")}>
           <img
             src="/logo.png"
-            className="h-14 w-14 md:h-20 md:w-20 rounded-full object-contain bg-white p-1.5 ring-2 ring-rose-200 shadow-sm"
+            className="h-12 w-auto md:h-16 object-contain"
             alt="Logo"
           />
-          <span className="hidden md:block text-[30px] lg:text-[34px] font-extrabold tracking-tight text-rose-700 leading-none">Rameswaram Fresh Seafoods</span>
+          <span className="block text-[18px] md:text-[30px] lg:text-[34px] font-extrabold tracking-tight text-rose-700 leading-none">Rameswaram Fresh Seafoods</span>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
