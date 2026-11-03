@@ -92,15 +92,15 @@ export default function ProductCard({ item }) {
   };
 
   return (
-    <div className="premium-card p-5 md:p-6 text-center min-h-[500px] h-full flex flex-col rounded-2xl">
+    <div className="premium-card p-4 md:p-5 text-center min-h-[380px] h-full flex flex-col rounded-2xl">
       <img
         src={mainImage}
         alt={item.name}
-        className="w-full aspect-[4/3] object-cover rounded-xl cursor-pointer"
+        className="w-full aspect-[16/9] object-cover rounded-xl cursor-pointer"
         onClick={() => navigate(`/product/${item._id}`)}
       />
 
-      <h3 className="font-extrabold text-lg md:text-xl mt-4 text-slate-900">{item.name}</h3>
+      <h3 className="font-extrabold text-lg md:text-xl mt-3 text-slate-900">{item.name}</h3>
       <p className="text-rose-700 font-bold text-lg">Rs {item.price}/{item.unit || "kg"}</p>
       {minOrderQty > 0 && (
         <p className="text-sm text-slate-500 mt-1">Min order: {minOrderQty} {item.unit || "kg"}</p>
