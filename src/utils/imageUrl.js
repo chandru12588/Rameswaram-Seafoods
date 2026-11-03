@@ -27,7 +27,8 @@ export function resolveImageUrl(image, baseUrl = import.meta.env.VITE_API_URL) {
 
 export function resolveProductImage(product, baseUrl = import.meta.env.VITE_API_URL) {
   const fromImages = Array.isArray(product?.images) ? product.images : [];
-  const preferredAbsolute = fromImages.find((img) => ABSOLUTE_URL_PATTERN.test(String(img || "")));
-  const image = preferredAbsolute || fromImages[0] || product?.image || "";
+  // Product edits put the replacement image first. Do not search ahead for
+  // another absolute URL, since that can select an older image instead.
+  const image = fromImages[0] || product?.image || "";
   return resolveImageUrl(image, baseUrl);
 }

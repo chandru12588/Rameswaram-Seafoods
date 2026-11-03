@@ -19,14 +19,14 @@ export default function EditProduct() {
     images: []
   });
 
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState("");
+  const [imageFiles, setImageFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => () => {
-    if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
-  }, [preview]);
+    previews.filter((preview) => preview.startsWith("blob:")).forEach(URL.revokeObjectURL);
+  }, [previews]);
 
   useEffect(() => {
     loadProduct();
@@ -37,7 +37,8 @@ export default function EditProduct() {
       const { data } = await api.get(`/products/${id}`);
       setProduct(data);
 
-      setPreview(resolveProductImage(data));
+      const images = data.images?.length ? data.images : data.image ? [data.image] : [];
+      setPreviews(images);
     } catch {
       alert("Product not found");
     }
@@ -55,15 +56,23 @@ export default function EditProduct() {
     formData.append("whatsappNumber", product.whatsappNumber);
     formData.append("minOrderQty", product.minOrderQty);
 
-    if (imageFile) formData.append("images", imageFile);
+    imageFiles.forEach((file) => formData.append("images", file));
 
     try {
-      const { data } = await api.put(`/products/update/${id}`, formData);
-      if (data.product) {
-        setProduct(data.product);
-        setPreview(resolveProductImage(data.product));
+      await api.put(`/products/update/${id}`, formData);
+      const { data: savedProduct } = await api.get(`/products/${id}`, {
+        params: { _imageRefresh: Date.now() },
+      });
+      setProduct(savedProduct);
+      const savedImages = savedProduct.images?.length ? savedProduct.images : savedProduct.image ? [savedProduct.image] : [];
+      setPreviews(savedImages);
+      const previousImages = product.images || [];
+      const newImageIsPrimary = savedProduct.images?.[0] && !previousImages.includes(savedProduct.images[0]);
+      if (imageFiles.length && !newImageIsPrimary) {
+        setError("The server still reports the old image. Deploy the latest backend updateProduct change, then upload again.");
+        return;
       }
-      setImageFile(null);
+      setImageFiles([]);
       alert("Product updated successfully!");
       navigate("/admin/products");
     } catch (err) {
@@ -146,12 +155,12 @@ export default function EditProduct() {
       <div className="mt-6 text-center">
         <p className="font-semibold mb-2 text-lg">Current Image</p>
 
-        {preview ? (
-          <img
-            src={preview}
-            alt="Preview"
-            className="w-48 h-48 object-cover rounded shadow border mx-auto"
-          />
+        {previews.length ? (
+          <div className="flex flex-wrap justify-center gap-3">
+            {previews.map((preview, index) => (
+              <img key={`${preview}-${index}`} src={preview.startsWith("blob:") ? preview : resolveProductImage({ images: [preview] })} alt={`Product image ${index + 1}`} className="w-32 h-32 object-cover rounded shadow border" />
+            ))}
+          </div>
         ) : (
           <div className="w-48 h-48 border flex items-center justify-center rounded mx-auto bg-gray-200 text-gray-500">
             No Image
@@ -166,21 +175,27 @@ export default function EditProduct() {
           type="file"
           accept="image/*"
           className="hidden"
+          multiple
           onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            setImageFile(file);
-            setPreview(URL.createObjectURL(file));
+            const files = Array.from(e.target.files || []);
+            if (files.length > 10) {
+              setError("Choose up to 10 images.");
+              e.target.value = "";
+              return;
+            }
+            setError("");
+            setImageFiles(files);
+            setPreviews(files.map((file) => URL.createObjectURL(file)));
           }}
         />
         <label
           htmlFor="product-image-upload"
           className="inline-flex items-center justify-center bg-blue-600 text-white font-semibold px-5 py-3 rounded cursor-pointer hover:bg-blue-700 transition"
         >
-          Upload Image
+          Upload Images
         </label>
-        <p className="text-sm text-gray-500 mt-2">Choose an image, then select Save Changes to apply it.</p>
-        {imageFile && <p className="text-sm text-green-700 mt-1">Selected: {imageFile.name}</p>}
+        <p className="text-sm text-gray-500 mt-2">Choose up to 10 images. Selected images replace the current gallery when saved.</p>
+        {imageFiles.length > 0 && <p className="text-sm text-green-700 mt-1">Selected {imageFiles.length} image{imageFiles.length === 1 ? "" : "s"}.</p>}
         {error && <p role="alert" className="text-sm text-red-600 mt-2">{error}</p>}
       </div>
 
