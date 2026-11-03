@@ -20,13 +20,13 @@ export default function EditProduct() {
   });
 
   const [imageFiles, setImageFiles] = useState([]);
-  const [previews, setPreviews] = useState([]);
+  const [gallery, setGallery] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => () => {
-    previews.filter((preview) => preview.startsWith("blob:")).forEach(URL.revokeObjectURL);
-  }, [previews]);
+    gallery.filter((item) => item.preview.startsWith("blob:")).forEach((item) => URL.revokeObjectURL(item.preview));
+  }, [gallery]);
 
   useEffect(() => {
     loadProduct();
@@ -38,7 +38,7 @@ export default function EditProduct() {
       setProduct(data);
 
       const images = data.images?.length ? data.images : data.image ? [data.image] : [];
-      setPreviews(images);
+      setGallery(images.map((url) => ({ url, preview: url, file: null })));
     } catch {
       alert("Product not found");
     }
@@ -56,7 +56,9 @@ export default function EditProduct() {
     formData.append("whatsappNumber", product.whatsappNumber);
     formData.append("minOrderQty", product.minOrderQty);
 
-    imageFiles.forEach((file) => formData.append("images", file));
+    const keptImages = gallery.filter((item) => !item.file).map((item) => item.url);
+    formData.append("existingImages", JSON.stringify(keptImages));
+    gallery.filter((item) => item.file).forEach((item) => formData.append("images", item.file));
 
     try {
       await api.put(`/products/update/${id}`, formData);
@@ -65,11 +67,9 @@ export default function EditProduct() {
       });
       setProduct(savedProduct);
       const savedImages = savedProduct.images?.length ? savedProduct.images : savedProduct.image ? [savedProduct.image] : [];
-      setPreviews(savedImages);
-      const previousImages = product.images || [];
-      const newImageIsPrimary = savedProduct.images?.[0] && !previousImages.includes(savedProduct.images[0]);
-      if (imageFiles.length && !newImageIsPrimary) {
-        setError("The server still reports the old image. Deploy the latest backend updateProduct change, then upload again.");
+      setGallery(savedImages.map((url) => ({ url, preview: url, file: null })));
+      if (savedImages.length !== keptImages.length + gallery.filter((item) => item.file).length) {
+        setError("The server did not save the updated image gallery. Deploy the latest backend updateProduct change, then try again.");
         return;
       }
       setImageFiles([]);
@@ -155,10 +155,22 @@ export default function EditProduct() {
       <div className="mt-6 text-center">
         <p className="font-semibold mb-2 text-lg">Current Image</p>
 
-        {previews.length ? (
+        {gallery.length ? (
           <div className="flex flex-wrap justify-center gap-3">
-            {previews.map((preview, index) => (
-              <img key={`${preview}-${index}`} src={preview.startsWith("blob:") ? preview : resolveProductImage({ images: [preview] })} alt={`Product image ${index + 1}`} className="w-32 h-32 object-cover rounded shadow border" />
+            {gallery.map((item, index) => (
+              <div key={`${item.preview}-${index}`} className="relative">
+                <img src={item.file ? item.preview : resolveProductImage({ images: [item.url] })} alt={`Product image ${index + 1}`} className="w-32 h-32 object-cover rounded shadow border" />
+                <div className="flex gap-1 mt-1">
+                  <button type="button" onClick={() => document.getElementById(`replace-image-${index}`).click()} className="flex-1 bg-blue-600 text-white text-xs px-2 py-1 rounded">Replace</button>
+                  <button type="button" onClick={() => setGallery((items) => items.filter((_, itemIndex) => itemIndex !== index))} className="flex-1 bg-red-600 text-white text-xs px-2 py-1 rounded">Delete</button>
+                </div>
+                <input id={`replace-image-${index}`} type="file" accept="image/*" className="hidden" onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setGallery((items) => items.map((entry, itemIndex) => itemIndex === index ? { url: entry.url, preview: URL.createObjectURL(file), file } : entry));
+                  e.target.value = "";
+                }} />
+              </div>
             ))}
           </div>
         ) : (
@@ -178,14 +190,13 @@ export default function EditProduct() {
           multiple
           onChange={(e) => {
             const files = Array.from(e.target.files || []);
-            if (files.length > 10) {
+            if (gallery.length + files.length > 10) {
               setError("Choose up to 10 images.");
               e.target.value = "";
               return;
             }
             setError("");
-            setImageFiles(files);
-            setPreviews(files.map((file) => URL.createObjectURL(file)));
+            setGallery((items) => [...items, ...files.map((file) => ({ url: "", preview: URL.createObjectURL(file), file }))]);
           }}
         />
         <label
@@ -194,8 +205,7 @@ export default function EditProduct() {
         >
           Upload Images
         </label>
-        <p className="text-sm text-gray-500 mt-2">Choose up to 10 images. Selected images replace the current gallery when saved.</p>
-        {imageFiles.length > 0 && <p className="text-sm text-green-700 mt-1">Selected {imageFiles.length} image{imageFiles.length === 1 ? "" : "s"}.</p>}
+        <p className="text-sm text-gray-500 mt-2">Add, replace, or delete images. You can keep up to 10 images; changes apply when saved.</p>
         {error && <p role="alert" className="text-sm text-red-600 mt-2">{error}</p>}
       </div>
 
