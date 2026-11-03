@@ -56,8 +56,7 @@ export default function EditProduct() {
     formData.append("whatsappNumber", product.whatsappNumber);
     formData.append("minOrderQty", product.minOrderQty);
 
-    const keptImages = gallery.filter((item) => !item.file).map((item) => item.url);
-    formData.append("existingImages", JSON.stringify(keptImages));
+    formData.append("existingImages", JSON.stringify(gallery.filter((item) => !item.file).map((item) => item.url)));
     gallery.filter((item) => item.file).forEach((item) => formData.append("images", item.file));
 
     try {
@@ -68,7 +67,7 @@ export default function EditProduct() {
       setProduct(savedProduct);
       const savedImages = savedProduct.images?.length ? savedProduct.images : savedProduct.image ? [savedProduct.image] : [];
       setGallery(savedImages.map((url) => ({ url, preview: url, file: null })));
-      if (savedImages.length !== keptImages.length + gallery.filter((item) => item.file).length) {
+      if (savedImages.length !== gallery.length) {
         setError("The server did not save the updated image gallery. Deploy the latest backend updateProduct change, then try again.");
         return;
       }
@@ -159,8 +158,10 @@ export default function EditProduct() {
           <div className="flex flex-wrap justify-center gap-3">
             {gallery.map((item, index) => (
               <div key={`${item.preview}-${index}`} className="relative">
-                <img src={item.file ? item.preview : resolveProductImage({ images: [item.url] })} alt={`Product image ${index + 1}`} className="w-32 h-32 object-cover rounded shadow border" />
+                <img src={item.file ? item.preview : resolveProductImage({ images: [item.url] })} alt={`Product image ${index + 1}`} className="w-32 h-32 object-contain bg-slate-50 rounded shadow border" />
+                {index === 0 && <span className="block text-xs font-semibold text-emerald-700 mt-1">Main image</span>}
                 <div className="flex gap-1 mt-1">
+                  {index !== 0 && <button type="button" onClick={() => setGallery((items) => [items[index], ...items.filter((_, itemIndex) => itemIndex !== index)])} className="flex-1 bg-emerald-600 text-white text-xs px-2 py-1 rounded">Set as main</button>}
                   <button type="button" onClick={() => document.getElementById(`replace-image-${index}`).click()} className="flex-1 bg-blue-600 text-white text-xs px-2 py-1 rounded">Replace</button>
                   <button type="button" onClick={() => setGallery((items) => items.filter((_, itemIndex) => itemIndex !== index))} className="flex-1 bg-red-600 text-white text-xs px-2 py-1 rounded">Delete</button>
                 </div>
