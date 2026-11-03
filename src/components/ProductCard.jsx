@@ -92,22 +92,23 @@ export default function ProductCard({ item }) {
   };
 
   return (
-    <div className="premium-card p-4 md:p-5 text-center min-h-[380px] h-full flex flex-col rounded-2xl">
+    <div className="premium-card p-3 md:p-4 text-left min-h-[210px] h-full flex flex-row items-stretch gap-4 rounded-2xl">
       <img
         src={mainImage}
         alt={item.name}
-        className="w-full aspect-[16/9] object-cover rounded-xl cursor-pointer"
+        className="w-[38%] min-w-[120px] self-stretch object-cover rounded-xl cursor-pointer"
         onClick={() => navigate(`/product/${item._id}`)}
       />
 
-      <h3 className="font-extrabold text-lg md:text-xl mt-3 text-slate-900">{item.name}</h3>
-      <p className="text-rose-700 font-bold text-lg">Rs {item.price}/{item.unit || "kg"}</p>
-      {minOrderQty > 0 && (
-        <p className="text-sm text-slate-500 mt-1">Min order: {minOrderQty} {item.unit || "kg"}</p>
-      )}
+      <div className="flex-1 min-w-0 flex flex-col items-start py-1">
+        <h3 className="font-extrabold text-lg md:text-xl text-slate-900">{item.name}</h3>
+        <p className="text-rose-700 font-bold text-lg">Rs {item.price}/{item.unit || "kg"}</p>
+        {minOrderQty > 0 && (
+          <p className="text-sm text-slate-500 mt-1">Min order: {minOrderQty} {item.unit || "kg"}</p>
+        )}
 
-      {isKg && (
-        <div className="mt-2 flex items-center justify-center gap-2 text-sm flex-wrap">
+        {isKg && (
+          <div className="mt-2 flex items-center justify-start gap-2 text-sm flex-wrap">
           {useSelect ? (
             <select
               value={selectedQty}
@@ -131,19 +132,20 @@ export default function ProductCard({ item }) {
               </button>
             ))
           )}
-        </div>
-      )}
+          </div>
+        )}
 
-      <button onClick={handleButtonClick} className="mt-auto w-full animated-gradient-btn text-white py-3 rounded-lg font-semibold">
-        Add to Cart
-      </button>
+        <button onClick={handleButtonClick} className="mt-auto w-full animated-gradient-btn text-white py-3 rounded-lg font-semibold">
+          Add to Cart
+        </button>
 
-      <button
-        onClick={() => navigate(`/product/${item._id}`)}
-        className="block mt-2 text-sm text-rose-700 underline underline-offset-2"
-      >
-        View Details
-      </button>
+        <button
+          onClick={() => navigate(`/product/${item._id}`)}
+          className="block mt-2 text-sm text-rose-700 underline underline-offset-2 self-center"
+        >
+          View Details
+        </button>
+      </div>
 
       {showNotes && openNote && <NotesModal onClose={() => setOpenNote(false)} onAdd={handleAdd} />}
     </div>
