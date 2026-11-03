@@ -146,10 +146,11 @@ export default function EditProduct() {
 
       {/* Upload Image */}
       <div className="mt-5">
-        <p className="font-semibold mb-1">Change Image (optional)</p>
         <input
+          id="product-image-upload"
           type="file"
           accept="image/*"
+          className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (!file) return;
@@ -157,6 +158,13 @@ export default function EditProduct() {
             setPreview(URL.createObjectURL(file));
           }}
         />
+        <label
+          htmlFor="product-image-upload"
+          className="inline-flex items-center justify-center bg-blue-600 text-white font-semibold px-5 py-3 rounded cursor-pointer hover:bg-blue-700 transition"
+        >
+          Upload Image
+        </label>
+        <p className="text-sm text-gray-500 mt-2">Choose an image, then select Save Changes to apply it.</p>
       </div>
 
       {/* Save Button */}
