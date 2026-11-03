@@ -22,6 +22,10 @@ export default function EditProduct() {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
 
+  useEffect(() => () => {
+    if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
+  }, [preview]);
+
   useEffect(() => {
     loadProduct();
   }, []);
@@ -145,9 +149,12 @@ export default function EditProduct() {
         <p className="font-semibold mb-1">Change Image (optional)</p>
         <input
           type="file"
+          accept="image/*"
           onChange={(e) => {
-            setImageFile(e.target.files[0]);
-            setPreview(URL.createObjectURL(e.target.files[0]));
+            const file = e.target.files?.[0];
+            if (!file) return;
+            setImageFile(file);
+            setPreview(URL.createObjectURL(file));
           }}
         />
       </div>
