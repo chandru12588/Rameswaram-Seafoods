@@ -96,7 +96,7 @@ export default function ProductCard({ item }) {
       <img
         src={mainImage}
         alt={item.name}
-        className="w-full h-[230px] md:h-[270px] object-cover bg-slate-50 rounded-xl cursor-pointer"
+        className="w-full h-[230px] md:h-[270px] object-contain bg-slate-50 rounded-xl cursor-pointer"
         onClick={() => navigate(`/product/${item._id}`)}
       />
 
