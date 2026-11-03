@@ -21,6 +21,8 @@ export default function EditProduct() {
 
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => () => {
     if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
@@ -42,6 +44,8 @@ export default function EditProduct() {
   };
 
   const updateProduct = async () => {
+    setSaving(true);
+    setError("");
     const formData = new FormData();
     formData.append("name", product.name);
     formData.append("price", product.price);
@@ -53,9 +57,20 @@ export default function EditProduct() {
 
     if (imageFile) formData.append("images", imageFile);
 
-    await api.put(`/products/update/${id}`, formData);
-    alert("Product updated successfully!");
-    navigate("/admin/products");
+    try {
+      const { data } = await api.put(`/products/update/${id}`, formData);
+      if (data.product) {
+        setProduct(data.product);
+        setPreview(resolveProductImage(data.product));
+      }
+      setImageFile(null);
+      alert("Product updated successfully!");
+      navigate("/admin/products");
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not update product. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -165,11 +180,14 @@ export default function EditProduct() {
           Upload Image
         </label>
         <p className="text-sm text-gray-500 mt-2">Choose an image, then select Save Changes to apply it.</p>
+        {imageFile && <p className="text-sm text-green-700 mt-1">Selected: {imageFile.name}</p>}
+        {error && <p role="alert" className="text-sm text-red-600 mt-2">{error}</p>}
       </div>
 
       {/* Save Button */}
       <button
         onClick={updateProduct}
+        disabled={saving}
         className="bg-teal-600 text-white py-3 px-5 rounded w-full mt-6 hover:bg-teal-700"
       >
         💾 Save Changes
